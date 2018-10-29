@@ -1,0 +1,58 @@
+- model: assignments.duty
+  pk: 1
+  fields: {order_id: 1, category: קריאה, name: ראשון, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 2
+  fields: {order_id: 2, category: קריאה, name: שני, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 3
+  fields: {order_id: 3, category: קריאה, name: שלישי, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 4
+  fields: {order_id: 4, category: קריאה, name: רביעי, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 5
+  fields: {order_id: 5, category: קריאה, name: חמישי, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 6
+  fields: {order_id: 6, category: קריאה, name: שישי, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 7
+  fields: {order_id: 7, category: קריאה, name: שביעי, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 8
+  fields: {order_id: 8, category: קריאה, name: הפטרה, applicable_for_profile: false}
+- model: assignments.duty
+  pk: 9
+  fields: {order_id: 9, category: קריאה, name: קריאות קצרות, not_applicable_for_roster: true}
+- model: assignments.duty
+  pk: 10
+  fields: {order_id: 10, category: קריאה, name: קריאות בינוניות, not_applicable_for_roster: true}
+- model: assignments.duty
+  pk: 11
+  fields: {order_id: 11, category: קריאה, name: קריאות ארוכות, not_applicable_for_roster: true}
+- model: assignments.duty
+  pk: 12
+  fields: {order_id: 12, category: דבר תורה, name: דבר תורה}
+- model: assignments.duty
+  pk: 13
+  fields: {order_id: 13, category: תפילה, name: קבלת שבת, applicable_for_adults: false, applicable_for_children: true}
+- model: assignments.duty
+  pk: 14
+  fields: {order_id: 14, category: תפילה, name: ערבית}
+- model: assignments.duty
+  pk: 15
+  fields: {order_id: 15, category: תפילה, name: יגדל, applicable_for_adults: false, applicable_for_children: true}
+- model: assignments.duty
+  pk: 16
+  fields: {order_id: 16, category: תפילה, name: שחרית}
+- model: assignments.duty
+  pk: 17
+  fields: {order_id: 17, category: תפילה, name: מוסף}
+- model: assignments.duty
+  pk: 18
+  fields: {order_id: 18, category: תפילה, name: אנעים זמירות, applicable_for_adults: false, applicable_for_children: true}
+- model: assignments.duty
+  pk: 19
+  fields: {order_id: 19, category: קידוש, name: תורן קידוש}
+#IMPORTANT: 19 is added by default to new users, and implicitly added for edit

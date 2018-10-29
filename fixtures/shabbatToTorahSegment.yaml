@@ -1,0 +1,18 @@
+- model: assignments.shabbattotorahsegment
+  pk: 1
+  fields:
+    shabbat: 1
+    segment: 1
+    user: [Nadav]
+- model: assignments.shabbattotorahsegment
+  pk: 2
+  fields:
+    shabbat: 1
+    segment: 2
+    user: [Nadav]
+- model: assignments.shabbattotorahsegment
+  pk: 3
+  fields:
+    shabbat: 1
+    segment: 3
+    user: [Nadav]

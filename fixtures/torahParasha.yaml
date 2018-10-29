@@ -1,0 +1,180 @@
+- model: parashot.parasha
+  pk: 1
+  fields: {name: "בראשית"}
+- model: parashot.parasha
+  pk: 2
+  fields: {name: "נח"}
+- model: parashot.parasha
+  pk: 3
+  fields: {name: "לך לך"}
+- model: parashot.parasha
+  pk: 4
+  fields: {name: "וירא"}
+- model: parashot.parasha
+  pk: 5
+  fields: {name: "חיי שרה"}
+- model: parashot.parasha
+  pk: 6
+  fields: {name: "תולדות"}
+- model: parashot.parasha
+  pk: 7
+  fields: {name: "ויצא"}
+- model: parashot.parasha
+  pk: 8
+  fields: {name: "וישלח"}
+- model: parashot.parasha
+  pk: 9
+  fields: {name: "וישב"}
+- model: parashot.parasha
+  pk: 10
+  fields: {name: "מקץ"}
+- model: parashot.parasha
+  pk: 11
+  fields: {name: "ויגש"}
+- model: parashot.parasha
+  pk: 12
+  fields: {name: "ויחי"}
+- model: parashot.parasha
+  pk: 13
+  fields: {name: "שמות"}
+- model: parashot.parasha
+  pk: 14
+  fields: {name: "וארא"}
+- model: parashot.parasha
+  pk: 15
+  fields: {name: "בא"}
+- model: parashot.parasha
+  pk: 16
+  fields: {name: "בשלח"}
+- model: parashot.parasha
+  pk: 17
+  fields: {name: "יתרו"}
+- model: parashot.parasha
+  pk: 18
+  fields: {name: "משפטים"}
+- model: parashot.parasha
+  pk: 19
+  fields: {name: "תרומה"}
+- model: parashot.parasha
+  pk: 20
+  fields: {name: "תצווה"}
+- model: parashot.parasha
+  pk: 21
+  fields: {name: "כי תשא"}
+- model: parashot.parasha
+  pk: 22
+  fields: {name: "ויקהל"}
+- model: parashot.parasha
+  pk: 23
+  fields: {name: "פקודי"}
+- model: parashot.parasha
+  pk: 24
+  fields: {name: "ויקהל-פקודי"}
+- model: parashot.parasha
+  pk: 25
+  fields: {name: "ויקרא"}
+- model: parashot.parasha
+  pk: 26
+  fields: {name: "צו"}
+- model: parashot.parasha
+  pk: 27
+  fields: {name: "שמיני"}
+- model: parashot.parasha
+  pk: 28
+  fields: {name: "תזריע"}
+- model: parashot.parasha
+  pk: 29
+  fields: {name: "מצורע"}
+- model: parashot.parasha
+  pk: 30
+  fields: {name: "תזריע-מצורע"}
+- model: parashot.parasha
+  pk: 31
+  fields: {name: "אחרי מות"}
+- model: parashot.parasha
+  pk: 32
+  fields: {name: "קדושים"}
+- model: parashot.parasha
+  pk: 33
+  fields: {name: "אחרי מות-קדושים"}
+- model: parashot.parasha
+  pk: 34
+  fields: {name: "אמור"}
+- model: parashot.parasha
+  pk: 35
+  fields: {name: "בהר"}
+- model: parashot.parasha
+  pk: 36
+  fields: {name: "בחוקותי"}
+- model: parashot.parasha
+  pk: 37
+  fields: {name: "בהר-בחוקותי"}
+- model: parashot.parasha
+  pk: 38
+  fields: {name: "במדבר"}
+- model: parashot.parasha
+  pk: 39
+  fields: {name: "נשא"}
+- model: parashot.parasha
+  pk: 40
+  fields: {name: "בהעלותך"}
+- model: parashot.parasha
+  pk: 41
+  fields: {name: "שלח"}
+- model: parashot.parasha
+  pk: 42
+  fields: {name: "קרח"}
+- model: parashot.parasha
+  pk: 43
+  fields: {name: "חוקת"}
+- model: parashot.parasha
+  pk: 44
+  fields: {name: "בלק"}
+- model: parashot.parasha
+  pk: 45
+  fields: {name: "פינחס"}
+- model: parashot.parasha
+  pk: 46
+  fields: {name: "מטות"}
+- model: parashot.parasha
+  pk: 47
+  fields: {name: "מסעי"}
+- model: parashot.parasha
+  pk: 48
+  fields: {name: "מטות-מסעי"}
+- model: parashot.parasha
+  pk: 49
+  fields: {name: "דברים"}
+- model: parashot.parasha
+  pk: 50
+  fields: {name: "ואתחנן"}
+- model: parashot.parasha
+  pk: 51
+  fields: {name: "עקב"}
+- model: parashot.parasha
+  pk: 52
+  fields: {name: "ראה"}
+- model: parashot.parasha
+  pk: 53
+  fields: {name: "שופטים"}
+- model: parashot.parasha
+  pk: 54
+  fields: {name: "כי תצא"}
+- model: parashot.parasha
+  pk: 55
+  fields: {name: "כי תבוא"}
+- model: parashot.parasha
+  pk: 56
+  fields: {name: "ניצבים"}
+- model: parashot.parasha
+  pk: 57
+  fields: {name: "וילך"}
+- model: parashot.parasha
+  pk: 58
+  fields: {name: "ניצבים-וילך"}
+- model: parashot.parasha
+  pk: 59
+  fields: {name: "האזינו"}
+- model: parashot.parasha
+  pk: 60
+  fields: {name: "וזאת הברכה"}

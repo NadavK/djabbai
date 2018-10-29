@@ -1,0 +1,21 @@
+- model: assignments.shabbat
+  pk: 1
+  fields:
+    dayt: 2017-08-11
+    parasha: 1
+    rishon: [Nadav]
+    sheni: [Ree]
+    shlishi: [Shvo]
+    rvii: [Yahel]
+    hamishi: null
+    shishi: null
+    shvii: null
+    haftorah: null
+    kabalat_shabbat: [Nadav]
+    maariv: [Shvo]
+    yigdal: [Yahel]
+    shaharit: [Nadav]
+    musaf: [Ree]
+    anim_zmirot: [Ree]
+    torans:
+    - [Nadav]

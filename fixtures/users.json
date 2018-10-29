@@ -1,0 +1,4 @@
+[
+  {"model": "users.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$36000$jK1tyiBKqQqL$z1LyqW94lKAiBEG0eZ+4HKRVo3DgbQZq9UCI4sk1NH0=", "last_login": "2017-08-15T19:02:13Z", "is_superuser": true, "username": "נדב_קהתי",  "first_name": "נדב", "last_name": "קהתי",  "email": "nadav@nadalia.com", "is_staff": true,  "date_joined": "2017-01-01T01:01:01Z",       "groups": [], "user_permissions": [] }},
+  {"model": "users.profile", "pk": 1, "fields": {"user_id": 1, "first_name": "נדב", "last_name": "קהתי", "_display_name": "נדב_קהתי", "full_name": "נדב זאב אריה",   "gender": "m",   "title": "cohen" }}
+]

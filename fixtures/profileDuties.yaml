@@ -1,0 +1,33 @@
+- model: assignments.profileduty
+  pk: 1
+  fields: {category: קריאה, name: קריאות קצרות}
+- model: assignments.profileduty
+  pk: 2
+  fields: {category: קריאה, name: קריאות בינוניות}
+- model: assignments.profileduty
+  pk: 3
+  fields: {category: קריאה, name: קריאות ארוכות}
+- model: assignments.profileduty
+  pk: 4
+  fields: {category: דבר תורה, name: דבר תורה}
+- model: assignments.profileduty
+  pk: 5
+  fields: {category: תפילה, name: קבלת שבת}
+- model: assignments.profileduty
+  pk: 6
+  fields: {category: תפילה, name: ערבית}
+- model: assignments.profileduty
+  pk: 7
+  fields: {category: תפילה, name: יגדל}
+- model: assignments.profileduty
+  pk: 8
+  fields: {category: תפילה, name: שחרית}
+- model: assignments.profileduty
+  pk: 9
+  fields: {category: תפילה, name: מוסף}
+- model: assignments.profileduty
+  pk: 10
+  fields: {category: תפילה, name: אנעים זמירות}
+- model: assignments.profileduty
+  pk: 11
+  fields: {category: קידוש, name: תורן קידוש}

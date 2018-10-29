@@ -1,0 +1,48 @@
+- model: parashot.segment
+  pk: 1
+  fields: {parasha: [בראשית], segment_type: 1, start_pos: "\u05D0:\u05D0", end_pos: "\u05D1:\u05D1", total_psukim: 11}
+- model: parashot.segment
+  pk: 2
+  fields: {parasha: [בראשית], segment_type: 2, start_pos: "\u05D1:\u05D1", end_pos: "\u05D2:\u05D2", total_psukim: 22}
+- model: parashot.segment
+  pk: 3
+  fields: {parasha: [בראשית], segment_type: 3, start_pos: "\u05D2:\u05D2", end_pos: "\u05D3:\u05D3", total_psukim: 33}
+- model: parashot.segment
+  pk: 4
+  fields: {parasha: [בראשית], segment_type: 4, start_pos: "\u05D3:\u05D3", end_pos: "\u05D4:\u05D4", total_psukim: 44}
+- model: parashot.segment
+  pk: 5
+  fields: {parasha: [בראשית], segment_type: 5, start_pos: "\u05D4:\u05D4", end_pos: "\u05D5:\u05D5", total_psukim: 55}
+- model: parashot.segment
+  pk: 6
+  fields: {parasha: [בראשית], segment_type: 6, start_pos: "\u05D5:\u05D5", end_pos: "\u05D6:\u05D6", total_psukim: 66}
+- model: parashot.segment
+  pk: 7
+  fields: {parasha: [בראשית], segment_type: 7, start_pos: "\u05D6:\u05D6", end_pos: "\u05D7:\u05D7", total_psukim: 77}
+- model: parashot.segment
+  pk: 8
+  fields: {parasha: [בראשית], segment_type: 8, start_pos: "\u05D8:\u05D8", end_pos: "\u05D9:\u05D9", total_psukim: 88}
+- model: parashot.segment
+  pk: 9
+  fields: {parasha: [נח], segment_type: 1, start_pos: "\u05D0:\u05D0", end_pos: "\u05D1:\u05D1", total_psukim: 11}
+- model: parashot.segment
+  pk: 10
+  fields: {parasha: [נח], segment_type: 2, start_pos: "\u05D1:\u05D1", end_pos: "\u05D2:\u05D2", total_psukim: 22}
+- model: parashot.segment
+  pk: 11
+  fields: {parasha: [נח], segment_type: 3, start_pos: "\u05D2:\u05D2", end_pos: "\u05D3:\u05D3", total_psukim: 33}
+- model: parashot.segment
+  pk: 12
+  fields: {parasha: [נח], segment_type: 4, start_pos: "\u05D3:\u05D3", end_pos: "\u05D4:\u05D4", total_psukim: 44}
+- model: parashot.segment
+  pk: 13
+  fields: {parasha: [נח], segment_type: 5, start_pos: "\u05D4:\u05D4", end_pos: "\u05D5:\u05D5", total_psukim: 55}
+- model: parashot.segment
+  pk: 14
+  fields: {parasha: [נח], segment_type: 6, start_pos: "\u05D5:\u05D5", end_pos: "\u05D6:\u05D6", total_psukim: 66}
+- model: parashot.segment
+  pk: 15
+  fields: {parasha: [נח], segment_type: 7, start_pos: "\u05D6:\u05D6", end_pos: "\u05D7:\u05D7", total_psukim: 77}
+- model: parashot.segment
+  pk: 16
+  fields: {parasha: [נח] ,segment_type: 8, start_pos: "\u05D8:\u05D8", end_pos: "\u05D9:\u05D9", total_psukim: 88}
