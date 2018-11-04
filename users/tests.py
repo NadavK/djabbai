@@ -27,17 +27,13 @@ class UserTestCase(TransactionTestCase):
         """
         Prints the response data if the code is bad
         """
-        if response.status_code != expected_code:
-            print(response.data)
-        self.assertEqual(response.status_code, expected_code)
+        self.assertEqual(response.status_code, expected_code, response.data)
 
     def assertHttpError(self, response):
         """
         Prints the response data if the code is bad
         """
-        if status.is_success(response.status_code):
-            print(response.data)
-        self.assertFalse(status.is_success(response.status_code))
+        self.assertFalse(status.is_success(response.status_code), response.data)
 
     def test_case_insensitive_login(self):
         user = APIClient()
@@ -238,7 +234,6 @@ class UserTestCase(TransactionTestCase):
         # Check profile
         response = user1.get(reverse('get_current_profile'), format='json')
         self.assertHttpCode(response, status.HTTP_200_OK)
-        print(response.data)
         self.assertEqual(response.data['display_name'], 'user 1')
         self.assertEqual(response.data.get('full_name'), None)
         self.assertEqual(response.data['first_name'], 'user')
@@ -360,7 +355,6 @@ class UserTestCase(TransactionTestCase):
         family = Family.objects.get(id=father_family_pk)
         self.assertCountEqual(family.parents.all().values_list('id', flat=True), [parent1_pk, parent1_pk2])     # Count compares elements
         self.assertIn(self.user2.profile.pk, family.children.all().values_list('id', flat=True))
-        print(response.data)
 
 
     def test_full_aliya_names(self):
@@ -556,7 +550,6 @@ class UserTestCase(TransactionTestCase):
 
         # Edit spouse
         response = user1.patch(reverse('profile-spouse-detail', args=[self.user1.profile.pk, spouse_pk]), format='json', data={'full_name': 'full spouse'})
-        print(response.data)
         self.assertHttpCode(response, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], 'spouse')
         self.assertEqual(response.data['last_name'], '1')
@@ -580,7 +573,6 @@ class UserTestCase(TransactionTestCase):
         login = admin.login(username='ad_min', password='test')
         self.assertEqual(login, True)
         response = admin.put(reverse('profile-spouse-detail', args=[self.user1.profile.pk, self.user2.profile.pk]), format='json', data={'full_name': 'full spouse'})
-        print(response.data)
         self.assertHttpCode(response, status.HTTP_201_CREATED)
 
         response = admin.get(reverse('profile-spouse-list', args=[self.user1.profile.pk]), format='json')
@@ -719,7 +711,6 @@ class UserTestCase(TransactionTestCase):
 
         # Create user for existing child profile - with wrong verification
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1', 'full_name': 'full name', 'verification_code': 123})
-        #self.assertHttpCode(response, status.HTTP_201_CREATED)
         self.assertHttpError(response)
 
         # Create user for existing child profile - with correct verification
@@ -809,13 +800,8 @@ class UserTestCase(TransactionTestCase):
         self.assertNotIn('read_only', response.data['children'][1])
         self.assertEqual(response.data['children'][1]['id'], child2_pk)
 
-
-
-
-
         # Create user for existing spouse profile - with correct verification
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1', 'full_name': 'full name', 'verification_code': spouse_verification_code})
-        print('SPOUSE REG:', response.data)
         self.assertHttpCode(response, status.HTTP_201_CREATED)
         self.assertIn('token', response.data)                   #did we get a token?
         self.assertTrue(response.data['token'])                 #is it empty?
@@ -825,14 +811,9 @@ class UserTestCase(TransactionTestCase):
         login = spouse1.login(username='spouse_1', password='abcdef1')
         self.assertEqual(login, True)
 
-
-
-
-
         # Get child detail from deep profile
         response = spouse1.get(reverse('profile-list'), format='json')
         self.assertHttpCode(response, status.HTTP_200_OK)
-        print(response.data)
         #self.assertEqual(len(response.data), 4)                                     # User can now also retrieve both children
         response = spouse1.get(reverse('profile-detail', args=[spouse_pk]), format='json')                #using spouse details!!!!
         self.assertHttpCode(response, status.HTTP_200_OK)
@@ -999,7 +980,6 @@ class UserTestCase(TransactionTestCase):
         self.assertHttpCode(response, status.HTTP_201_CREATED)
         self.assertEqual(response.data['full_name'], 'fatha S1')
         parent1_pk = response.data['id']
-        print('parent_id: ', response.data['id'])
         parent_verification_code = response.data['verification_code']
 
         # Add new profile for mother
@@ -1022,6 +1002,8 @@ class UserTestCase(TransactionTestCase):
         # Create with bad code
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_parent', 'password': "abcdef1", 'first_name': 'parent1', 'last_name': '1', 'full_name': 'full name', 'verification_code': parent_verification_code+1})
         self.assertHttpError(response)
+        self.assertEqual(response.data, ['Profile not found for Verification Code'])
+
         # Create with good code
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_parent', 'password': "abcdef1", 'first_name': 'parent1', 'last_name': '1', 'full_name': 'full name', 'verification_code': parent_verification_code})
         self.assertHttpCode(response, status.HTTP_201_CREATED)
@@ -1048,14 +1030,13 @@ class UserTestCase(TransactionTestCase):
         self.assertHttpError(response)
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_spouse', 'password': "abcdef1", 'first_name': 'spouseXXX', 'last_name': '1', 'full_name': 'full name', 'verification_code': spouse_verification_code+1})
         self.assertHttpError(response)
-        response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_spouse', 'password': "abcdef1", 'first_name': 'spouseXXX', 'last_name': '1', 'full_name': 'full name', 'verification_code': spouse_verification_code})
-        self.assertHttpError(response)
+        #response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_spouse', 'password': "abcdef1", 'first_name': 'spouseXXX', 'last_name': '1', 'full_name': 'full name', 'verification_code': spouse_verification_code})
+        #self.assertHttpError(response)
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_spouse', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1', 'full_name': 'full name', 'verification_code': spouse_verification_code})
         self.assertHttpCode(response, status.HTTP_201_CREATED)
 
         # Edit spouse
         response = user1.patch(reverse('profile-spouse-detail', args=[self.user1.profile.pk, spouse_pk]), format='json', data={'full_name': 'full spouse'})
-        print(response.data)
         self.assertHttpError(response)
         # Edit spouse - direct
         response = user1.patch(reverse('profile-detail', args=[spouse_pk]), format='json', data={'full_name': 'full spouse'})
@@ -1076,12 +1057,10 @@ class UserTestCase(TransactionTestCase):
         spouse1_pk = response.data['id']
 
         response = user1.get(reverse('user-detail', args=[spouse1_pk]), format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['verified'], False)
 
         response = user1.patch(reverse('user-detail', args=[spouse1_pk]), format='json', data={"full_name": "spouse fullname"})
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['verified'], False)
 
@@ -1153,7 +1132,6 @@ class UserTestCase(TransactionTestCase):
         response = anon.get(reverse('check_user', args=['new_user1']))      # Newly created user
         self.assertHttpCode(response, status.HTTP_200_OK)
         self.assertEqual(response.data, {'verified': True})
-        print('XXXXyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy:', response.data)
 
         # Anon cannot set password for verified user
         response = anon.post(reverse('register'), format='json', data={"first_name": "new", "last_name": "user1", 'password': "123456", "email": "new1@gmail.com", 'username': 'duh'})

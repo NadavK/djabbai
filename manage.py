@@ -26,4 +26,6 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+    import threading
+    print(' '.join(sys.argv) + ", thread #" + str( threading.get_ident()))
     execute_from_command_line(sys.argv)

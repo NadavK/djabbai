@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+*.h
 
 # Distribution / packaging
 .Python
@@ -14,6 +15,7 @@ dist/
 downloads/
 eggs/
 .eggs/
+include/
 lib/
 lib64/
 parts/
@@ -54,6 +56,7 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
+settings_secret.py
 db.sqlite3
 
 # Flask stuff:
@@ -102,3 +105,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.idea

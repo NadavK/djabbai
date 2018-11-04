@@ -22,145 +22,145 @@
 
 from common.date_utils import calendar_util
 
-ID_BERESHITH                   = 0;
-ID_NOAH                        = 1;
-ID_LEHLEHA                     = 2;
-ID_VAYERA                      = 3;
-ID_HAYESARAH                   = 4;
-ID_TOLEDOTH                    = 5;
-ID_VAYETSE                     = 6;
-ID_VAYISHLAH                   = 7;
-ID_VAYESHEB                    = 8;
-ID_MIKKETS                     = 9;
-ID_VAYIGGASH                  = 10;
-ID_VAYHEE                     = 11;
-ID_SHEMOTH                    = 12;
-ID_VAERA                      = 13;
-ID_BO                         = 14;
-ID_BESHALLAH                  = 15;
-ID_YITHRO                     = 16;
-ID_MISHPATIM                  = 17;
-ID_TERUMAH                    = 18;
-ID_TETSAVVEH                  = 19;
-ID_KITISSA                    = 20;
-ID_VAYAKHEL                   = 21;
-ID_PEKUDE                     = 22;
-ID_VAYIKRA                    = 23;
-ID_TSAV                       = 24;
-ID_SHEMINI                    = 25;
-ID_TAZRIANG                   = 26;
-ID_METSORANG                  = 27;
-ID_AHAREMOTH                  = 28;
-ID_KEDOSHIM                   = 29;
-ID_EMOR                       = 30;
-ID_BEHAR                      = 31;
-ID_BEHUKKOTHAI                = 32;
-ID_BEMIDBAR                   = 33;
-ID_NASO                       = 34;
-ID_BEHAALOTEHA                = 35;
-ID_SHELAHLEHA                 = 36;
-ID_KORAH                      = 37;
-ID_HUKATH                     = 38;
-ID_BALAK                      = 39;
-ID_PINHAS                     = 40;
-ID_MATOTH                     = 41;
-ID_MASEH                      = 42;
-ID_DEBARIM                    = 43;
-ID_VAETHANAN                  = 44;
-ID_EKEB                       = 45;
-ID_REEH                       = 46;
-ID_SHOFETIM                   = 47;
-ID_KITETSE                    = 48;
-ID_KITABO                     = 49;
-ID_NITSABIM                   = 50;
-ID_VAYELEH                    = 51;
-ID_HAAZINU                    = 52;
+ID_BERESHITH                   = 0
+ID_NOAH                        = 1
+ID_LEHLEHA                     = 2
+ID_VAYERA                      = 3
+ID_HAYESARAH                   = 4
+ID_TOLEDOTH                    = 5
+ID_VAYETSE                     = 6
+ID_VAYISHLAH                   = 7
+ID_VAYESHEB                    = 8
+ID_MIKKETS                     = 9
+ID_VAYIGGASH                  = 10
+ID_VAYHEE                     = 11
+ID_SHEMOTH                    = 12
+ID_VAERA                      = 13
+ID_BO                         = 14
+ID_BESHALLAH                  = 15
+ID_YITHRO                     = 16
+ID_MISHPATIM                  = 17
+ID_TERUMAH                    = 18
+ID_TETSAVVEH                  = 19
+ID_KITISSA                    = 20
+ID_VAYAKHEL                   = 21
+ID_PEKUDE                     = 22
+ID_VAYIKRA                    = 23
+ID_TSAV                       = 24
+ID_SHEMINI                    = 25
+ID_TAZRIANG                   = 26
+ID_METSORANG                  = 27
+ID_AHAREMOTH                  = 28
+ID_KEDOSHIM                   = 29
+ID_EMOR                       = 30
+ID_BEHAR                      = 31
+ID_BEHUKKOTHAI                = 32
+ID_BEMIDBAR                   = 33
+ID_NASO                       = 34
+ID_BEHAALOTEHA                = 35
+ID_SHELAHLEHA                 = 36
+ID_KORAH                      = 37
+ID_HUKATH                     = 38
+ID_BALAK                      = 39
+ID_PINHAS                     = 40
+ID_MATOTH                     = 41
+ID_MASEH                      = 42
+ID_DEBARIM                    = 43
+ID_VAETHANAN                  = 44
+ID_EKEB                       = 45
+ID_REEH                       = 46
+ID_SHOFETIM                   = 47
+ID_KITETSE                    = 48
+ID_KITABO                     = 49
+ID_NITSABIM                   = 50
+ID_VAYELEH                    = 51
+ID_HAAZINU                    = 52
 
-ID_SIMHATHTORAH               = 53;
-ID_SIMHATHTORAH_2             = 54;
-ID_SIMHATHTORAH_3             = 55;
+ID_SIMHATHTORAH               = 53
+ID_SIMHATHTORAH_2             = 54
+ID_SIMHATHTORAH_3             = 55
 
-ID_ROSH_HODESH_SHABBAT        = 60;
-ID_SHEKALIM                   = 61;
-ID_ZAHOR                      = 62;
-ID_PARAH                      = 63;
-ID_HAHODESH                   = 64;
-ID_HAGGADOL                   = 65;
-ID_SHUVA                      = 66;
+ID_ROSH_HODESH_SHABBAT        = 60
+ID_SHEKALIM                   = 61
+ID_ZAHOR                      = 62
+ID_PARAH                      = 63
+ID_HAHODESH                   = 64
+ID_HAGGADOL                   = 65
+ID_SHUVA                      = 66
 
-ID_ROSH_HASHANAH_I            = 70;
-ID_ROSH_HASHANAH_II           = 71;
-ID_FAST_OF_GEDALIAH           = 72;
-ID_YOM_KIPPUR                 = 73;
-ID_SUCCOTH_I                  = 74;
-ID_SUCCOTH_II                 = 75;
-ID_SUCCOTH_III_NO_SHABBAT     = 76;
-ID_SUCCOTH_III                = 77;
-ID_SUCCOTH_IV                 = 78;
-ID_SUCCOTH_V_NO_SHABBAT       = 79;
-ID_SUCCOTH_V                  = 80;
-ID_SUCCOTH_VI_NO_SHABBAT      = 81;
-ID_SUCCOTH_VI                 = 82;
-ID_HOSHANAH_RABBAH            = 83;
-ID_HOL_HAMOED_SUCCOTH         = 84;
-ID_SHEMINI_AZERETH_1          = 85;
-ID_FAST_OF_ESTHER             = 86;
-ID_PURIM                      = 87;
-ID_FAST_OF_TEVET_10           = 88;
-ID_PESAH_I                    = 89;
-ID_HOL_HAMOED_PESAH           = 90;
-ID_PESAH_VII                  = 91;
-ID_PESAH_VIII                 = 92;
-ID_PESAH_VIII_NO_SHABBAT      = 93;
-ID_SHAVUOTH_I                 = 94;
-ID_SHAVUOTH_II_NO_SHABBAT     = 95;
-ID_SHAVUOTH_II                = 96;
-ID_YOM_HAATZMAUT              = 97;
-ID_FAST_OF_TAMMUZ_17          = 98;
-ID_FAST_OF_TISHA_BAV          = 99;
-ID_CHANUKKAH_I               = 100;
-ID_CHANUKKAH_II              = 101;
-ID_CHANUKKAH_III             = 102;
-ID_CHANUKKAH_IV              = 103;
-ID_CHANUKKAH_V               = 104;
-ID_CHANUKKAH_VI              = 105;
-ID_CHANUKKAH_VI_ROSH_HODESH  = 106;
-ID_CHANUKKAH_VII             = 107;
-ID_CHANUKKAH_VII_ROSH_HODESH = 108;
-ID_CHANUKKAH_VIII            = 109;
-ID_SECOND_SHABBAT_CHANUKKAH  = 110;
-ID_ROSH_HODESH               = 111;
-ID_PESAH_II                  = 112;
-ID_PESAH_III                 = 113;
-ID_PESAH_IV                  = 114;
-ID_PESAH_IV_NOT_SUNDAY       = 115;
-ID_PESAH_IV_SUNDAY           = 116;
-ID_PESAH_V                   = 117;
-ID_PESAH_V_NOT_MONDAY        = 118;
-ID_PESAH_V_MONDAY            = 119;
-ID_PESAH_VI                  = 120;
+ID_ROSH_HASHANAH_I            = 70
+ID_ROSH_HASHANAH_II           = 71
+ID_FAST_OF_GEDALIAH           = 72
+ID_YOM_KIPPUR                 = 73
+ID_SUCCOTH_I                  = 74
+ID_SUCCOTH_II                 = 75
+ID_SUCCOTH_III_NO_SHABBAT     = 76
+ID_SUCCOTH_III                = 77
+ID_SUCCOTH_IV                 = 78
+ID_SUCCOTH_V_NO_SHABBAT       = 79
+ID_SUCCOTH_V                  = 80
+ID_SUCCOTH_VI_NO_SHABBAT      = 81
+ID_SUCCOTH_VI                 = 82
+ID_HOSHANAH_RABBAH            = 83
+ID_HOL_HAMOED_SUCCOTH         = 84
+ID_SHEMINI_AZERETH_1          = 85
+ID_FAST_OF_ESTHER             = 86
+ID_PURIM                      = 87
+ID_FAST_OF_TEVET_10           = 88
+ID_PESAH_I                    = 89
+ID_HOL_HAMOED_PESAH           = 90
+ID_PESAH_VII                  = 91
+ID_PESAH_VIII                 = 92
+ID_PESAH_VIII_NO_SHABBAT      = 93
+ID_SHAVUOTH_I                 = 94
+ID_SHAVUOTH_II_NO_SHABBAT     = 95
+ID_SHAVUOTH_II                = 96
+ID_YOM_HAATZMAUT              = 97
+ID_FAST_OF_TAMMUZ_17          = 98
+ID_FAST_OF_TISHA_BAV          = 99
+ID_CHANUKKAH_I               = 100
+ID_CHANUKKAH_II              = 101
+ID_CHANUKKAH_III             = 102
+ID_CHANUKKAH_IV              = 103
+ID_CHANUKKAH_V               = 104
+ID_CHANUKKAH_VI              = 105
+ID_CHANUKKAH_VI_ROSH_HODESH  = 106
+ID_CHANUKKAH_VII             = 107
+ID_CHANUKKAH_VII_ROSH_HODESH = 108
+ID_CHANUKKAH_VIII            = 109
+ID_SECOND_SHABBAT_CHANUKKAH  = 110
+ID_ROSH_HODESH               = 111
+ID_PESAH_II                  = 112
+ID_PESAH_III                 = 113
+ID_PESAH_IV                  = 114
+ID_PESAH_IV_NOT_SUNDAY       = 115
+ID_PESAH_IV_SUNDAY           = 116
+ID_PESAH_V                   = 117
+ID_PESAH_V_NOT_MONDAY        = 118
+ID_PESAH_V_MONDAY            = 119
+ID_PESAH_VI                  = 120
 
-ID_SPECIAL_1                  = 150;
-ID_SPECIAL_2                  = 151;
-ID_SPECIAL_3                  = 152;
-ID_SPECIAL_4                  = 153;
-ID_SPECIAL_5                  = 154;
-ID_SPECIAL_6                  = 155;
-ID_SPECIAL_7                  = 156;
-ID_SPECIAL_8                  = 157;
-ID_SPECIAL_8A                 = 158;
-ID_SPECIAL_9                  = 159;
-ID_SPECIAL_10                 = 161;
-ID_SPECIAL_11                 = 162;
-ID_SPECIAL_12                 = 163;
+ID_SPECIAL_1                  = 150
+ID_SPECIAL_2                  = 151
+ID_SPECIAL_3                  = 152
+ID_SPECIAL_4                  = 153
+ID_SPECIAL_5                  = 154
+ID_SPECIAL_6                  = 155
+ID_SPECIAL_7                  = 156
+ID_SPECIAL_8                  = 157
+ID_SPECIAL_8A                 = 158
+ID_SPECIAL_9                  = 159
+ID_SPECIAL_10                 = 161
+ID_SPECIAL_11                 = 162
+ID_SPECIAL_12                 = 163
 
-ID_SHEMINI_AZERETH_2          = 170;
-ID_SHEMINI_AZERETH_3          = 171;
-ID_SHEMINI_AZERETH            = 172;
+ID_SHEMINI_AZERETH_2          = 170
+ID_SHEMINI_AZERETH_3          = 171
+ID_SHEMINI_AZERETH            = 172
 
-ID_MAX                        = 256;
+ID_MAX                        = 256
 
-ID_NULL                       = 1000;
+ID_NULL                       = 1000
 
 torahSectionsA = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -212,7 +212,8 @@ torahSectionsA = \
    ID_NITSABIM,            ID_VAYELEH, ID_NULL,      # 48
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 49
    ID_YOM_KIPPUR,          ID_NULL,    ID_NULL,      # 50
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 51
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL       # 51
+  ]
 
 torahSectionsB = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -264,7 +265,8 @@ torahSectionsB = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 47
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 48
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 49
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 50
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL       # 50
+   ]
 
 torahSectionsCDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -317,7 +319,8 @@ torahSectionsCDiaspora = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 49
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 50
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 51
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 52
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL       # 52
+  ]
 
 torahSectionsCIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -370,7 +373,7 @@ torahSectionsCIsrael = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 49
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 50
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 51
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 52
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 52
 
 torahSectionsDDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -423,7 +426,7 @@ torahSectionsDDiaspora = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 48
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 49
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 50
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 51
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 51
 
 torahSectionsDIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -476,7 +479,7 @@ torahSectionsDIsrael = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 48
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 49
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 50
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 51
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 51
 
 torahSectionsEDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -529,7 +532,7 @@ torahSectionsEDiaspora = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 49
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 50
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 51
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 52
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 52
 
 torahSectionsEIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -582,7 +585,7 @@ torahSectionsEIsrael = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 49
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 50
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 51
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 52
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 52
 
 torahSectionsF = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -635,7 +638,7 @@ torahSectionsF = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 49
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 50
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 51
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 52
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 52
 
 torahSectionsG = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -687,7 +690,7 @@ torahSectionsG = \
    ID_NITSABIM,            ID_VAYELEH, ID_NULL,      # 48
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 49
    ID_YOM_KIPPUR,          ID_NULL,    ID_NULL,      # 50
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 51
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 51
 
 torahSectionsHDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -744,7 +747,7 @@ torahSectionsHDiaspora = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 52
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 53
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 54
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 55
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 55
 
 torahSectionsHIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -801,7 +804,7 @@ torahSectionsHIsrael = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 52
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 53
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 54
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 55
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 55
 
 torahSectionsI = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -858,7 +861,7 @@ torahSectionsI = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 52
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 53
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 54
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 55
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 55
 
 torahSectionsJ = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -914,7 +917,7 @@ torahSectionsJ = \
    ID_NITSABIM,            ID_VAYELEH, ID_NULL,      # 51
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 52
    ID_YOM_KIPPUR,          ID_NULL,    ID_NULL,      # 53
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 54
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 54
 
 torahSectionsKDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -971,7 +974,7 @@ torahSectionsKDiaspora = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 52
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 53
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 54
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 55
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 55
 
 torahSectionsKIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -1028,7 +1031,7 @@ torahSectionsKIsrael = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 52
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 53
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 54
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 55
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 55
 
 torahSectionsLDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -1085,7 +1088,7 @@ torahSectionsLDiaspora = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 52
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 53
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 54
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 55
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 55
 
 torahSectionsLIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -1142,7 +1145,7 @@ torahSectionsLIsrael = \
    ID_NITSABIM,            ID_NULL,    ID_NULL,      # 52
    ID_VAYELEH,             ID_NULL,    ID_NULL,      # 53
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 54
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 55
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 55
 
 torahSectionsM = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -1199,7 +1202,7 @@ torahSectionsM = \
    ID_NITSABIM,            ID_VAYELEH, ID_NULL,      # 52
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 53
    ID_YOM_KIPPUR,          ID_NULL,    ID_NULL,      # 54
-   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL];     # 55
+   ID_HOL_HAMOED_SUCCOTH,  ID_NULL,    ID_NULL]     # 55
 
 torahSectionsNDiaspora = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -1256,7 +1259,7 @@ torahSectionsNDiaspora = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 52
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 53
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 54
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 55
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 55
 
 torahSectionsNIsrael = \
   [ID_BERESHITH,           ID_NULL,    ID_NULL,      #  1
@@ -1313,7 +1316,7 @@ torahSectionsNIsrael = \
    ID_ROSH_HASHANAH_I,     ID_NULL,    ID_NULL,      # 52
    ID_HAAZINU,             ID_NULL,    ID_NULL,      # 53
    ID_SUCCOTH_I,           ID_NULL,    ID_NULL,      # 54
-   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL];     # 55
+   ID_SHEMINI_AZERETH,     ID_NULL,    ID_NULL]     # 55
 
 def torahGetWeekday(absDate):
   wochentag = (int(absDate) + 2) % 7
@@ -1326,398 +1329,398 @@ def torahLastMonthOfHebrewYear(year):
   return calendar_util.hebrew_year_months(year)
 
 def getYearType(year):
-  rhWeekday = torahGetWeekday(calendar_util.hebrew_to_jd(year, 7, 1));
-  lengthOfYear = int(calendar_util.hebrew_to_jd(year+1, 7, 1) - calendar_util.hebrew_to_jd(year, 7, 1));
-  pesWeekday = torahGetWeekday(calendar_util.hebrew_to_jd(year, 1, 15));
+  rhWeekday = torahGetWeekday(calendar_util.hebrew_to_jd(year, 7, 1))
+  lengthOfYear = int(calendar_util.hebrew_to_jd(year+1, 7, 1) - calendar_util.hebrew_to_jd(year, 7, 1))
+  pesWeekday = torahGetWeekday(calendar_util.hebrew_to_jd(year, 1, 15))
 
   if ((rhWeekday == 1) and (lengthOfYear == 353) and (pesWeekday == 2)):
-    return 1;
+    return 1
   if ((rhWeekday == 6) and (lengthOfYear == 353) and (pesWeekday == 0)):
-    return 2;
+    return 2
   if ((rhWeekday == 2) and (lengthOfYear == 354) and (pesWeekday == 4)):
-    return 3;
+    return 3
   if ((rhWeekday == 4) and (lengthOfYear == 354) and (pesWeekday == 6)):
-    return 4;
+    return 4
   if ((rhWeekday == 1) and (lengthOfYear == 355) and (pesWeekday == 4)):
-    return 5;
+    return 5
   if ((rhWeekday == 4) and (lengthOfYear == 355) and (pesWeekday == 0)):
-    return 6;
+    return 6
   if ((rhWeekday == 6) and (lengthOfYear == 355) and (pesWeekday == 2)):
-    return 7;
+    return 7
 
   if ((rhWeekday == 1) and (lengthOfYear == 383) and (pesWeekday == 4)):
-    return 8;
+    return 8
   if ((rhWeekday == 4) and (lengthOfYear == 383) and (pesWeekday == 0)):
-    return 9;
+    return 9
   if ((rhWeekday == 6) and (lengthOfYear == 383) and (pesWeekday == 2)):
-    return 10;
+    return 10
   if ((rhWeekday == 2) and (lengthOfYear == 384) and (pesWeekday == 6)):
-    return 11;
+    return 11
   if ((rhWeekday == 1) and (lengthOfYear == 385) and (pesWeekday == 6)):
-    return 12;
+    return 12
   if ((rhWeekday == 4) and (lengthOfYear == 385) and (pesWeekday == 2)):
-    return 13;
+    return 13
   if ((rhWeekday == 6) and (lengthOfYear == 385) and (pesWeekday == 4)):
-   return 14;
+   return 14
 
-  return 0;
+  return 0
 
 def determineBereshith(year):
-  simchatTorah = calendar_util.hebrew_to_jd(year, 7, 23);
+  simchatTorah = calendar_util.hebrew_to_jd(year, 7, 23)
   while (torahGetWeekday(simchatTorah) != 6):
-    simchatTorah += 1;
-  return (simchatTorah);
+    simchatTorah += 1
+  return (simchatTorah)
 
 def getTorahSections(hebrewMonth, hebrewDay, hebrewYear, diaspora):
-  shuvahDate = calendar_util.hebrew_to_jd(hebrewYear, 7, 1) + 1;
+  shuvahDate = calendar_util.hebrew_to_jd(hebrewYear, 7, 1) + 1
   while (torahGetWeekday(shuvahDate) != 6):
-    shuvahDate += 1;
+    shuvahDate += 1
 
-  torahDate = calendar_util.hebrew_to_jd(hebrewYear, hebrewMonth, hebrewDay);
+  torahDate = calendar_util.hebrew_to_jd(hebrewYear, hebrewMonth, hebrewDay)
   if (torahGetWeekday(torahDate) == 6):
-    bereshithDate = determineBereshith(hebrewYear);
+    bereshithDate = determineBereshith(hebrewYear)
     if (torahDate < bereshithDate):
-      referenceYear = hebrewYear-1;
+      referenceYear = hebrewYear-1
     else:
-      referenceYear = hebrewYear;
+      referenceYear = hebrewYear
 
-    yearType = getYearType(referenceYear);
-    bereshithDate = determineBereshith(referenceYear);
-    torahWeekNo = int(torahDate-bereshithDate)//7;
+    yearType = getYearType(referenceYear)
+    bereshithDate = determineBereshith(referenceYear)
+    torahWeekNo = int(torahDate-bereshithDate)//7
 
-    returnTorahSection = "";
-    idTorah1 = ID_NULL;
-    idTorah2 = ID_NULL;
-    idTorah3 = ID_NULL;
+    returnTorahSection = ""
+    idTorah1 = ID_NULL
+    idTorah2 = ID_NULL
+    idTorah3 = ID_NULL
 #
 # allgemein: A, B, F, G, I, J, M
 # Israel/Diaspora: C, D, E, H, K, L, N
 #
 
     if (yearType == 1): # A
-      idTorah1 = torahSectionsA[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsA[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsA[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsA[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsA[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsA[torahWeekNo * 3 + 2]
     if (yearType == 2): # B
-      idTorah1 = torahSectionsB[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsB[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsB[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsB[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsB[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsB[torahWeekNo * 3 + 2]
     if (yearType == 3): # C
       if diaspora:
-        idTorah1 = torahSectionsCDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsCDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsCDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsCDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsCDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsCDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsCIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsCIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsCIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsCIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsCIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsCIsrael[torahWeekNo * 3 + 2]
     if (yearType == 4): # D
       if diaspora:
-        idTorah1 = torahSectionsDDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsDDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsDDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsDDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsDDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsDDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsDIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsDIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsDIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsDIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsDIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsDIsrael[torahWeekNo * 3 + 2]
     if (yearType == 5): # E
       if diaspora:
-        idTorah1 = torahSectionsEDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsEDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsEDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsEDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsEDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsEDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsEIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsEIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsEIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsEIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsEIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsEIsrael[torahWeekNo * 3 + 2]
     if (yearType == 6): # F
-      idTorah1 = torahSectionsF[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsF[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsF[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsF[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsF[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsF[torahWeekNo * 3 + 2]
     if (yearType == 7): # G
-      idTorah1 = torahSectionsG[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsG[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsG[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsG[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsG[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsG[torahWeekNo * 3 + 2]
     if (yearType == 8): # H
       if diaspora:
-        idTorah1 = torahSectionsHDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsHDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsHDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsHDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsHDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsHDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsHIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsHIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsHIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsHIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsHIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsHIsrael[torahWeekNo * 3 + 2]
     if (yearType == 9): # I
-      idTorah1 = torahSectionsI[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsI[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsI[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsI[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsI[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsI[torahWeekNo * 3 + 2]
     if (yearType == 10): # J
-      idTorah1 = torahSectionsJ[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsJ[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsJ[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsJ[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsJ[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsJ[torahWeekNo * 3 + 2]
     if (yearType == 11): # K
       if (diaspora):
-        idTorah1 = torahSectionsKDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsKDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsKDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsKDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsKDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsKDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsKIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsKIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsKIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsKIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsKIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsKIsrael[torahWeekNo * 3 + 2]
     if (yearType == 12): # L
       if (diaspora):
-        idTorah1 = torahSectionsLDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsLDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsLDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsLDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsLDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsLDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsLIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsLIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsLIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsLIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsLIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsLIsrael[torahWeekNo * 3 + 2]
     if (yearType == 13): # M
-      idTorah1 = torahSectionsM[torahWeekNo * 3 + 0];
-      idTorah2 = torahSectionsM[torahWeekNo * 3 + 1];
-      idTorah3 = torahSectionsM[torahWeekNo * 3 + 2];
+      idTorah1 = torahSectionsM[torahWeekNo * 3 + 0]
+      idTorah2 = torahSectionsM[torahWeekNo * 3 + 1]
+      idTorah3 = torahSectionsM[torahWeekNo * 3 + 2]
     if (yearType == 14): # N
       if diaspora:
-        idTorah1 = torahSectionsNDiaspora[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsNDiaspora[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsNDiaspora[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsNDiaspora[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsNDiaspora[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsNDiaspora[torahWeekNo * 3 + 2]
       else:
-        idTorah1 = torahSectionsNIsrael[torahWeekNo * 3 + 0];
-        idTorah2 = torahSectionsNIsrael[torahWeekNo * 3 + 1];
-        idTorah3 = torahSectionsNIsrael[torahWeekNo * 3 + 2];
+        idTorah1 = torahSectionsNIsrael[torahWeekNo * 3 + 0]
+        idTorah2 = torahSectionsNIsrael[torahWeekNo * 3 + 1]
+        idTorah3 = torahSectionsNIsrael[torahWeekNo * 3 + 2]
 
     print('ids:', idTorah1, idTorah2, idTorah3)
 
     if (idTorah1 != ID_NULL):
-      torahSection = getTorahSectionName(idTorah1);
+      torahSection = getTorahSectionName(idTorah1)
       print('torahSection:', torahSection)
       if (torahSection != ""):
         if (returnTorahSection != ""):
-          returnTorahSection = returnTorahSection + ", ";
-        returnTorahSection = returnTorahSection + torahSection;
+          returnTorahSection = returnTorahSection + ", "
+        returnTorahSection = returnTorahSection + torahSection
     if (idTorah2 != ID_NULL):
-      torahSection = getTorahSectionName(idTorah2);
+      torahSection = getTorahSectionName(idTorah2)
       if (torahSection != ""):
         if (returnTorahSection != ""):
-          returnTorahSection = returnTorahSection + ", ";
-        returnTorahSection = returnTorahSection + torahSection;
+          returnTorahSection = returnTorahSection + ", "
+        returnTorahSection = returnTorahSection + torahSection
     if (idTorah3 != ID_NULL):
-      torahSection = getTorahSectionName(idTorah3);
+      torahSection = getTorahSectionName(idTorah3)
       if (torahSection != ""):
         if (returnTorahSection != ""):
-          returnTorahSection = returnTorahSection + ", ";
-        returnTorahSection = returnTorahSection + torahSection;
+          returnTorahSection = returnTorahSection + ", "
+        returnTorahSection = returnTorahSection + torahSection
 
     if (torahDate == shuvahDate):
       if (returnTorahSection != ""):
-        returnTorahSection = returnTorahSection + ", ";
-      returnTorahSection = returnTorahSection + getTorahSectionName(ID_SHUVA);
+        returnTorahSection = returnTorahSection + ", "
+      returnTorahSection = returnTorahSection + getTorahSectionName(ID_SHUVA)
 
-    return (returnTorahSection);
+    return (returnTorahSection)
   else:
-    return "";
+    return ""
 
 def getTorahSectionName(section):
   if (section == ID_BERESHITH):
-    return "Bereshith";
+    return "Bereshith"
   if (section == ID_NOAH):
-    return "Noah";
+    return "Noah"
   if (section == ID_LEHLEHA):
-    return "Le'h Leha";
+    return "Le'h Leha"
   if (section == ID_VAYERA):
-    return "Vayera";
+    return "Vayera"
   if (section == ID_HAYESARAH):
-    return "Haye Sarah";
+    return "Haye Sarah"
   if (section == ID_TOLEDOTH):
-    return "Toledoth";
+    return "Toledoth"
   if (section == ID_VAYETSE):
-    return "Vayetse";
+    return "Vayetse"
   if (section == ID_VAYISHLAH):
-    return "Vayishlah";
+    return "Vayishlah"
   if (section == ID_VAYESHEB):
-    return "Vayesheb";
+    return "Vayesheb"
   if (section == ID_MIKKETS):
-    return "Mikkets";
+    return "Mikkets"
   if (section == ID_VAYIGGASH):
-    return "Vayiggash";
+    return "Vayiggash"
   if (section == ID_VAYHEE):
-    return "Vayhee";
+    return "Vayhee"
   if (section == ID_SHEMOTH):
-    return "Shemoth";
+    return "Shemoth"
   if (section == ID_VAERA):
-    return "Vaera";
+    return "Vaera"
   if (section == ID_BO):
-    return "Bo";
+    return "Bo"
   if (section == ID_BESHALLAH):
-    return "Beshallah, Shabbat Shirah";
+    return "Beshallah, Shabbat Shirah"
   if (section == ID_YITHRO):
-    return "Yithro";
+    return "Yithro"
   if (section == ID_MISHPATIM):
-    return "Mishpatim";
+    return "Mishpatim"
   if (section == ID_TERUMAH):
-    return "Terumah";
+    return "Terumah"
   if (section == ID_TETSAVVEH):
-    return "Tetsavveh";
+    return "Tetsavveh"
   if (section == ID_KITISSA):
-    return "Ki Tissa";
+    return "Ki Tissa"
   if (section == ID_VAYAKHEL):
-    return "Vayakhel";
+    return "Vayakhel"
   if (section == ID_PEKUDE):
-    return "Pekude";
+    return "Pekude"
   if (section == ID_VAYIKRA):
-    return "Vayikra";
+    return "Vayikra"
   if (section == ID_TSAV):
-    return "Tsav";
+    return "Tsav"
   if (section == ID_SHEMINI):
-    return "Shemini";
+    return "Shemini"
   if (section == ID_TAZRIANG):
-    return "Tazria";
+    return "Tazria"
   if (section == ID_METSORANG):
-    return "Metsora";
+    return "Metsora"
   if (section == ID_AHAREMOTH):
-    return "Aharemoth";
+    return "Aharemoth"
   if (section == ID_KEDOSHIM):
-    return "Kedoshim";
+    return "Kedoshim"
   if (section == ID_EMOR):
-    return "Emor";
+    return "Emor"
   if (section == ID_BEHAR):
-    return "Behar";
+    return "Behar"
   if (section == ID_BEHUKKOTHAI):
-    return "Behukkothai";
+    return "Behukkothai"
   if (section == ID_BEMIDBAR):
-    return "Bemidbar";
+    return "Bemidbar"
   if (section == ID_NASO):
-    return "Naso";
+    return "Naso"
   if (section == ID_BEHAALOTEHA):
-    return "Behaaloteha";
+    return "Behaaloteha"
   if (section == ID_SHELAHLEHA):
-    return "Shelah Leha";
+    return "Shelah Leha"
   if (section == ID_KORAH):
-    return "Korah";
+    return "Korah"
   if (section == ID_HUKATH):
-    return "Hukath";
+    return "Hukath"
   if (section == ID_BALAK):
-    return "Balak";
+    return "Balak"
   if (section == ID_PINHAS):
-    return "Pinhas";
+    return "Pinhas"
   if (section == ID_MATOTH):
-    return "Matoth";
+    return "Matoth"
   if (section == ID_MASEH):
-    return "Maseh";
+    return "Maseh"
   if (section == ID_DEBARIM):
-    return "Debarim, Shabbat Hazon";
+    return "Debarim, Shabbat Hazon"
   if (section == ID_VAETHANAN):
-    return "Vaethanan, Shabbat Nahamu";
+    return "Vaethanan, Shabbat Nahamu"
   if (section == ID_EKEB):
-    return "Ekeb";
+    return "Ekeb"
   if (section == ID_REEH):
-    return "Reeh";
+    return "Reeh"
   if (section == ID_SHOFETIM):
-    return "Shofetim";
+    return "Shofetim"
   if (section == ID_KITETSE):
-    return "Ki Tetse";
+    return "Ki Tetse"
   if (section == ID_KITABO):
-    return "Ki Tabo";
+    return "Ki Tabo"
   if (section == ID_NITSABIM):
-    return "Nitsabim";
+    return "Nitsabim"
   if (section == ID_VAYELEH):
-    return "Vayeleh";
+    return "Vayeleh"
   if (section == ID_HAAZINU):
-    return "Haazinu";
+    return "Haazinu"
 
-  #ID_SIMHATHTORAH = 53;
-  #ID_SIMHATHTORAH_2 = 54;
-  #ID_SIMHATHTORAH_3 = 55;
+  #ID_SIMHATHTORAH = 53
+  #ID_SIMHATHTORAH_2 = 54
+  #ID_SIMHATHTORAH_3 = 55
 
   if (section == ID_ROSH_HODESH_SHABBAT):
-    return "Shabbat Rosh Hodesh";
+    return "Shabbat Rosh Hodesh"
   if (section == ID_SHEKALIM):
-    return "Shabbat Shekalim";
+    return "Shabbat Shekalim"
   if (section == ID_ZAHOR):
-    return "Shabbat Za'hor";
+    return "Shabbat Za'hor"
   if (section == ID_PARAH):
-    return "Shabbat Parah";
+    return "Shabbat Parah"
   if (section == ID_HAHODESH):
-    return "Shabbat Hahodesh";
+    return "Shabbat Hahodesh"
   if (section == ID_HAGGADOL):
-    return "Shabbat Hagadol";
+    return "Shabbat Hagadol"
   if (section == ID_SHUVA):
-    return "Shabbat Shuva";
+    return "Shabbat Shuva"
 
 
 
   if (section == ID_ROSH_HASHANAH_I):
-    return "Rosh Hashana I";
+    return "Rosh Hashana I"
   if (section == ID_ROSH_HASHANAH_II):
-    return "Rosh Hashana II";
+    return "Rosh Hashana II"
   if (section == ID_FAST_OF_GEDALIAH):
-    return "Fast of Gedalia";
+    return "Fast of Gedalia"
   if (section == ID_YOM_KIPPUR):
-    return "Yom Kippur";
-  ID_SUCCOTH_I = 74;
-  ID_SUCCOTH_II = 75;
-  ID_SUCCOTH_III_NO_SHABBAT = 76;
-  ID_SUCCOTH_III = 77;
-  ID_SUCCOTH_IV = 78;
-  ID_SUCCOTH_V_NO_SHABBAT = 79;
-  ID_SUCCOTH_V = 80;
-  ID_SUCCOTH_VI_NO_SHABBAT = 81;
-  ID_SUCCOTH_VI = 82;
-  ID_HOSHANAH_RABBAH = 83;
-  ID_HOL_HAMOED_SUCCOTH = 84;
-  ID_SHEMINI_AZERETH_1 = 85;
-  ID_FAST_OF_ESTHER = 86;
-  ID_PURIM = 87;
-  ID_FAST_OF_TEVET_10 = 88;
-  ID_PESAH_I = 89;
-  ID_HOL_HAMOED_PESAH = 90;
-  ID_PESAH_VII = 91;
-  ID_PESAH_VIII = 92;
-  ID_PESAH_VIII_NO_SHABBAT = 93;
-  ID_SHAVUOTH_I = 94;
-  ID_SHAVUOTH_II_NO_SHABBAT = 95;
-  ID_SHAVUOTH_II = 96;
-  ID_YOM_HAATZMAUT = 97;
-  ID_FAST_OF_TAMMUZ_17 = 98;
-  ID_FAST_OF_TISHA_BAV = 99;
-  ID_CHANUKKAH_I = 100;
-  ID_CHANUKKAH_II = 101;
-  ID_CHANUKKAH_III = 102;
-  ID_CHANUKKAH_IV = 103;
-  ID_CHANUKKAH_V = 104;
-  ID_CHANUKKAH_VI = 105;
-  ID_CHANUKKAH_VI_ROSH_HODESH = 106;
-  ID_CHANUKKAH_VII = 107;
-  ID_CHANUKKAH_VII_ROSH_HODESH = 108;
-  ID_CHANUKKAH_VIII = 109;
-  ID_SECOND_SHABBAT_CHANUKKAH = 110;
-  ID_ROSH_HODESH = 111;
-  ID_PESAH_II = 112;
-  ID_PESAH_III = 113;
-  ID_PESAH_IV = 114;
-  ID_PESAH_IV_NOT_SUNDAY = 115;
-  ID_PESAH_IV_SUNDAY = 116;
-  ID_PESAH_V = 117;
-  ID_PESAH_V_NOT_MONDAY = 118;
-  ID_PESAH_V_MONDAY = 119;
-  ID_PESAH_VI = 120;
+    return "Yom Kippur"
+  ID_SUCCOTH_I = 74
+  ID_SUCCOTH_II = 75
+  ID_SUCCOTH_III_NO_SHABBAT = 76
+  ID_SUCCOTH_III = 77
+  ID_SUCCOTH_IV = 78
+  ID_SUCCOTH_V_NO_SHABBAT = 79
+  ID_SUCCOTH_V = 80
+  ID_SUCCOTH_VI_NO_SHABBAT = 81
+  ID_SUCCOTH_VI = 82
+  ID_HOSHANAH_RABBAH = 83
+  ID_HOL_HAMOED_SUCCOTH = 84
+  ID_SHEMINI_AZERETH_1 = 85
+  ID_FAST_OF_ESTHER = 86
+  ID_PURIM = 87
+  ID_FAST_OF_TEVET_10 = 88
+  ID_PESAH_I = 89
+  ID_HOL_HAMOED_PESAH = 90
+  ID_PESAH_VII = 91
+  ID_PESAH_VIII = 92
+  ID_PESAH_VIII_NO_SHABBAT = 93
+  ID_SHAVUOTH_I = 94
+  ID_SHAVUOTH_II_NO_SHABBAT = 95
+  ID_SHAVUOTH_II = 96
+  ID_YOM_HAATZMAUT = 97
+  ID_FAST_OF_TAMMUZ_17 = 98
+  ID_FAST_OF_TISHA_BAV = 99
+  ID_CHANUKKAH_I = 100
+  ID_CHANUKKAH_II = 101
+  ID_CHANUKKAH_III = 102
+  ID_CHANUKKAH_IV = 103
+  ID_CHANUKKAH_V = 104
+  ID_CHANUKKAH_VI = 105
+  ID_CHANUKKAH_VI_ROSH_HODESH = 106
+  ID_CHANUKKAH_VII = 107
+  ID_CHANUKKAH_VII_ROSH_HODESH = 108
+  ID_CHANUKKAH_VIII = 109
+  ID_SECOND_SHABBAT_CHANUKKAH = 110
+  ID_ROSH_HODESH = 111
+  ID_PESAH_II = 112
+  ID_PESAH_III = 113
+  ID_PESAH_IV = 114
+  ID_PESAH_IV_NOT_SUNDAY = 115
+  ID_PESAH_IV_SUNDAY = 116
+  ID_PESAH_V = 117
+  ID_PESAH_V_NOT_MONDAY = 118
+  ID_PESAH_V_MONDAY = 119
+  ID_PESAH_VI = 120
 
-  ID_SPECIAL_1 = 150;
-  ID_SPECIAL_2 = 151;
-  ID_SPECIAL_3 = 152;
-  ID_SPECIAL_4 = 153;
-  ID_SPECIAL_5 = 154;
-  ID_SPECIAL_6 = 155;
-  ID_SPECIAL_7 = 156;
-  ID_SPECIAL_8 = 157;
-  ID_SPECIAL_8A = 158;
-  ID_SPECIAL_9 = 159;
-  ID_SPECIAL_10 = 161;
-  ID_SPECIAL_11 = 162;
-  ID_SPECIAL_12 = 163;
+  ID_SPECIAL_1 = 150
+  ID_SPECIAL_2 = 151
+  ID_SPECIAL_3 = 152
+  ID_SPECIAL_4 = 153
+  ID_SPECIAL_5 = 154
+  ID_SPECIAL_6 = 155
+  ID_SPECIAL_7 = 156
+  ID_SPECIAL_8 = 157
+  ID_SPECIAL_8A = 158
+  ID_SPECIAL_9 = 159
+  ID_SPECIAL_10 = 161
+  ID_SPECIAL_11 = 162
+  ID_SPECIAL_12 = 163
 
-  ID_SHEMINI_AZERETH_2 = 170;
-  ID_SHEMINI_AZERETH_3 = 171;
-  ID_SHEMINI_AZERETH = 172;
+  ID_SHEMINI_AZERETH_2 = 170
+  ID_SHEMINI_AZERETH_3 = 171
+  ID_SHEMINI_AZERETH = 172
 
-  return "";
+  return ""

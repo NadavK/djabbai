@@ -483,9 +483,9 @@ class ParentProfileViewSet(RelatedProfileViewSet):
         else:
             try:
                 profile = Profile.objects.get(pk=user_pk)
+                return [profile.father, profile.mother]
             except Profile.DoesNotExist:
                 pass
-            return [profile.father, profile.mother]
 
     def list(self, request, profile_pk=None):
         serializer = self.serializer_class(self._get_parent(profile_pk), many=True, context={'request': request})

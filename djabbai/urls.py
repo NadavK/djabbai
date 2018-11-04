@@ -67,4 +67,7 @@ urlpatterns = [
     url(r'^api-token-auth/', jwt_views.obtain_jwt_token, name='api-token-auth'),
     url(r'^api-token-refresh/', jwt_views.refresh_jwt_token),
     url(r'^api-token-verify/', jwt_views.verify_jwt_token),
+
+    # other urls
+    url(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
 ]

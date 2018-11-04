@@ -1,17 +1,16 @@
+import logging
 from random import randint
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import ValidationError
-import logging
-logger = logging.getLogger(__name__)
-
+from reversion.signals import post_revision_commit
 from parashot.models import Parasha
 from users.managers import UserManager, ProfileManager
 
+logger = logging.getLogger(__name__)
 
 class Family(models.Model):
     parents = models.ManyToManyField('Profile', verbose_name='הורים', blank=True, related_name='family_of_parent')
@@ -21,7 +20,7 @@ class Family(models.Model):
         verbose_name_plural = 'Families'
 
     def __str__(self):
-        return "%s (#%s)" % (self.display_name(), self.id)
+        return self.display_name()
 
     def display_name(self, force_all_last_names=False):
         names = ""
@@ -144,14 +143,14 @@ class Profile(models.Model):
 
     duties = models.ManyToManyField('assignments.Duty', verbose_name='תפקידים', related_name='+', limit_choices_to={'applicable_for_profile': True}, blank=True)       # '+' == no related name
 
-    default_family_to_add_children = models.ForeignKey(Family, null=True, blank=True, verbose_name='משפחה', help_text='ילדים חדשים יוצרפו למשפחה הזאת')
+    default_family_to_add_children = models.ForeignKey(Family, null=True, blank=True, verbose_name='משפחה', help_text='ילדים חדשים יצורפו למשפחה זאת')
     #parents = models.ManyToManyField('Profile', verbose_name='הורים', blank=True, related_name='children')
     father_full_name = models.CharField(blank=True, max_length=200, verbose_name='אם אין קישור לאב, שם אב העברי')     # Only needed if father is empty
 
     dod_day = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='יארצייט - יום')                         # Yahrzeit Day
     dod_month = models.PositiveSmallIntegerField(blank=True, null=True, choices=MONTHS, verbose_name='יארצייט - חודש')      # Yahrzeit Month
 
-    gender = models.CharField(blank=True, max_length=1, choices=PROFILE_GENDERS, verbose_name='זכר')
+    gender = models.CharField(blank=True, max_length=1, choices=PROFILE_GENDERS, verbose_name='מין')
     bar_mitzvahed = models.BooleanField(default=True, verbose_name='בוגר', help_text='מעל גיל 13')
     bar_mitzvah_parasha = models.ForeignKey(Parasha, blank=True, null=True, related_name='people_with_this_barmitzvah_parasha', verbose_name='פרשת בר-מצווה')
 
@@ -160,7 +159,10 @@ class Profile(models.Model):
     verification_code = models.IntegerField(blank=True, null=True, verbose_name='קוד אימות')     # Used to verify that a user can be created for an existing profile
 
     phone = models.CharField(blank=True, max_length=20, verbose_name='טלפון')
-    email = models.CharField(blank=True, max_length=50, verbose_name='מייל')
+    #email = models.CharField(blank=True, max_length=50, verbose_name='מייל')
+    email = models.EmailField(blank=True, verbose_name='מייל')
+    rcv_user_emails = models.BooleanField(default=True, verbose_name='מיילים אישיים', help_text='מיילים הקשורים לתפקוד המשתמש')
+    rcv_admin_emails = models.BooleanField(default=False, verbose_name='מיילים ניהוליים', help_text='מיילים הקשורים לתפקוד הגבאי')
     head_of_household = models.BooleanField(default=False, verbose_name='ראש משפחה', help_text='לסינון הדפסת רשימות')
     _kwargs_from_view = None
 
@@ -191,9 +193,9 @@ class Profile(models.Model):
 
     def __str__(self):
         if self.display_name:
-            return "%s (#%s)" % (self.display_name, self.id)
+            return self.display_name
         else:           # If display name is empty, then so is first_name & last_name
-            return "%s (#%s)" % (self.full_name, self.id)
+            return self.full_name
 
     def _display_name_helper(self, with_family=False):
         if self._display_name:
@@ -226,39 +228,39 @@ class Profile(models.Model):
         except Profile.DoesNotExist:
             pass
 
-        # If instance.verification_code was set, then override existing profile name (give child opportunity to 'fix' their name
-        if instance.verification_code:
-            try:
-                profile = Profile.objects.get(verification_code=instance.verification_code)
-                if profile.first_name:
-                    profile.first_name=instance.first_name
-                if profile.last_name:
-                    profile.last_name=instance.last_name
-                profile.save()
-            except Profile.DoesNotExist:
-                raise ValidationError('Profile not found for Verification Code')
+        # If instance.verification_code was set, then check that a matching profile exists (objects will be updated in post_save)
+        if instance.verification_code and not Profile.objects.filter(verification_code=instance.verification_code).exists():
+            raise ValidationError('Profile not found for Verification Code')
 
     @receiver(post_save, sender=User)
     def create_update_user_profile(sender, instance, created, **kwargs):
         """
-        This function called when a new user is created, so we create a linked profile
+        This function is called when a new user is created/edited, so we create/update the linked profile
         """
-        if created:     # Created means a new record was created - Add
-            #Check if a profile already exists
-            try:
-                profile=Profile.objects.get(first_name=instance.first_name, last_name=instance.last_name)
-                profile.user = instance
-                profile.save()
-                logger.debug('FOUND PROFILE verification_code %s', instance.verification_code)
-            except Profile.DoesNotExist:    # So create a profile for this user
-                Profile.objects.create(user=instance, first_name=instance.first_name, last_name=instance.last_name)
-        else:           # This is edit
-            if instance.profile.first_name != instance.first_name or instance.profile.last_name != instance.last_name:
-                logger.debug('User edited, updating profile:  %s  %s', instance.first_name, instance.last_name)
-                instance.profile.first_name = instance.first_name
-                instance.profile.last_name = instance.last_name
-                #instance.profile.display_name = instance.username
-                instance.profile.save()
+        need_to_save_profile = False
+        if created:     # Created means a new user  was created - Check if a profile needs to be created
+            if instance.verification_code:
+                try:
+                    instance.profile = Profile.objects.get(verification_code=instance.verification_code)
+                    logger.debug('FOUND PROFILE verification_code %s on profile #%s', instance.verification_code, instance.profile.pk)
+                    need_to_save_profile = True
+                except Profile.DoesNotExist:  # So create a profile for this user
+                    logger.debug('Verification Code %s not found ', instance.verification_code)
+                    raise ValidationError('Verification Code not found')
+            else:
+                logger.debug('Creating new profile for user #%s', instance.pk)
+                instance.profile = Profile.objects.create(user=instance, first_name=instance.first_name, last_name=instance.last_name)      # setting instance.profile for continuation of this function that compares betweeen user and profile names
+
+        #Check if profile names should be updated from user
+        if instance.profile.first_name != instance.first_name or instance.profile.last_name != instance.last_name:
+            logger.debug('User edited, updating profile:  %s  %s', instance.first_name, instance.last_name)
+            instance.profile.first_name = instance.first_name
+            instance.profile.last_name = instance.last_name
+            #instance.profile.display_name = instance.username
+            need_to_save_profile = True
+
+        if need_to_save_profile:
+            instance.profile.save()
 
     def save(self, *args, **kwargs):
         if not self.full_name and not (self.first_name and self.last_name):
@@ -281,13 +283,17 @@ class Profile(models.Model):
                 self.set_family(child=child)
                 child.parents[0].set_family(spouse=self)
 
-        # Maybe we can move these to pres_save?
+        # Maybe we can move these to pre_save profile?
         if not self.user and not self.verification_code:
-            self.verification_code = randint(10000, 99999)    # Will be used in the future to verify that a user can be created for this profile. TODO: Should really check that code is unique
+            self.verification_code = randint(10000, 99999)    # Will be used in the future to verify that a user can be created for this profile.
+            # Check that code is unique
+            while Profile.objects.filter(verification_code=self.verification_code).exists():
+                self.verification_code = randint(10000, 99999)
             self.save()
             return
 
         if self.user and self.verification_code:
+            logger.debug('Clearing verification_code for %s', self.pk)
             self.verification_code = None                   # User exists, time to remove the verification code
             self.save()
             return
@@ -295,6 +301,39 @@ class Profile(models.Model):
         #Force Kiddush Duty (it's a M2M, so has to be added after saving self)
         if not self.duties.filter(pk=19).exists():
             self.duties.add(19)
+
+    # Send admmin notifications on changes to profile
+    @receiver(post_revision_commit)
+    def on_revision_commit(revision, versions, **kwargs):
+        from django.template.loader import render_to_string
+        from pinax.notifications.models import queue
+        from reversion.models import Version
+        from reversion_compare.mixins import CompareMixin, CompareMethodsMixin
+
+        class MyCompare(CompareMixin, CompareMethodsMixin):
+            compare_exclude = ['bar_mitzvah_parasha', 'default_family_to_add_children', 'email', 'phone', 'verification_code', 'gabbai_notes', 'rcv_admin_emails', 'rcv_user_emails', 'head_of_household']
+
+        try:
+            # need the previous version of the main object (versions is a list of all changes to all affected-objects)
+            previous_versions = (Version.objects.get_for_object(versions[0].object)).order_by("-pk")[1:2]
+            diff, has_unfollowed_fields = MyCompare().compare(versions[0].object, previous_versions[0], versions[0])
+            if (len(diff) == 0):
+                return      # no changes, so don't need notification
+
+            context = {
+                'compare_data': diff,
+                'version2': previous_versions[0],
+                'user': versions[0].object.display_name_with_family
+            }
+            html = render_to_string('reversion-compare/compare_partial.html', context)
+
+            #send to all users with rcv_admin_emails profiles
+            for profile in Profile.objects.filter(rcv_admin_emails=True).select_related('user'):
+                # notification library expects users (not profiles)
+                profile.user.email = profile.email  # this project does not use the user model to maintain emails; need to add it temporarily for  notification to work
+                queue([profile.user], 'profile_changed', {'message': 'עדכון פרופיל', 'from_user': context["user"], 'html': html})
+        except Exception as e:
+            logger.error("Error comparing revisions: %s", e)
 
     @property
     def father(self):

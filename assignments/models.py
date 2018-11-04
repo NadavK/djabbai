@@ -28,7 +28,8 @@ class Duty(models.Model):
         verbose_name_plural = 'Duties'
 
     def __str__(self):
-        return "%s-%s (#%s)" % (self.category, self.name, self.id)
+        #return "%s-%s" % (self.category, self.name)
+        return self.name
 
 
 class Shabbat(models.Model):

@@ -108,7 +108,7 @@ class UserAdmin(UserAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(CompareVersionAdmin, DjangoObjectActions, admin.ModelAdmin):
-    list_display = ('display_name_with_family', 'first_name', 'last_name', 'family_links', 'verification_code', 'link_to_user', 'head_of_household', 'gender', 'bar_mitzvahed', 'bar_mitzvah_parasha', 'dod_day', 'dod_month')
+    list_display = ('display_name_with_family', 'first_name', 'last_name', 'family_links', 'verification_code', 'link_to_user', 'head_of_household', 'gender', 'bar_mitzvahed', 'bar_mitzvah_parasha', 'rcv_user_emails', 'rcv_admin_emails', 'dod_day', 'dod_month')
     read_only_fields = ('family_links',)
     actions = ['export', 'set_head_of_household', 'unset_head_of_household']
     list_filter = ('gender', 'bar_mitzvahed', 'head_of_household', ParashotListFilter, DodListFilter)
@@ -164,7 +164,7 @@ class ProfileAdmin(CompareVersionAdmin, DjangoObjectActions, admin.ModelAdmin):
         response['Content-Disposition'] = 'attachment; filename=profile.json'
         return response
 
-        return self.export(request, queryset.count())
+        #return self.export(request, queryset.count())
     export_this.label = "Export All"  # optional
     export_this.short_description = "Export profiles"  # optional
 
