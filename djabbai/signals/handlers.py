@@ -19,3 +19,7 @@ def create_notice_types(sender, **kwargs):
         id=settings.SITE_ID,
         defaults={'domain': 'tzuri.myshul.nadalia.com', 'name': 'צורי'}
     )
+
+    # Only head-of-households require the Kiddush duty
+    from users.models import Profile
+    qs = Profile.duties.through.objects.filter(profile__head_of_household=False, duty__pk=19).delete()

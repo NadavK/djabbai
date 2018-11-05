@@ -460,14 +460,19 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.data['parents'][0]['full_name'], 'שמי אבא')
         self.assertEqual(response.data['parents'][0]['full_aliya_name'], 'שמי אבא בן סבאבא הלוי')
 
-
-
+    # Test Duties
     def test_duties_kiddush(self):
         user1 = APIClient()
         login = user1.login(username='user_1', password='test')
         self.assertEqual(login, True)
 
-        #Test Duties
+        # non-household profiles are not assigned kiddush duty
+        response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
+        self.assertNotIn('duties', response.data)
+
+        # household profiles are automatically assigned kiddush duty
+        response = user1.put(reverse('profile-detail', args=[self.user1.profile.pk]), data={'head_of_household': True}, format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
         response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
         self.assertEqual(response.data['duties'], [19])
 

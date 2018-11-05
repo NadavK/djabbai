@@ -266,6 +266,16 @@ class Profile(models.Model):
         if not self.full_name and not (self.first_name and self.last_name):
             raise ValidationError('Either Full-Name, or First & Last names must be set')
 
+        # Verification-code is used when creating a new user to associate with an existing child/parent/spouse profile
+        if not self.user and not self.verification_code:
+            self.verification_code = randint(10000, 99999)
+            # Check that code is unique
+            while Profile.objects.filter(verification_code=self.verification_code).exists():
+                self.verification_code = randint(10000, 99999)
+        elif self.user and self.verification_code:
+            logger.debug('Clearing verification_code for %s', self.pk)
+            self.verification_code = None                   # User exists, time to remove the verification code
+
         super().save(*args, **kwargs)
 
         # kwargs_from_view is injected by the View during create to signify if self is a spouse or child
@@ -283,23 +293,8 @@ class Profile(models.Model):
                 self.set_family(child=child)
                 child.parents[0].set_family(spouse=self)
 
-        # Maybe we can move these to pre_save profile?
-        if not self.user and not self.verification_code:
-            self.verification_code = randint(10000, 99999)    # Will be used in the future to verify that a user can be created for this profile.
-            # Check that code is unique
-            while Profile.objects.filter(verification_code=self.verification_code).exists():
-                self.verification_code = randint(10000, 99999)
-            self.save()
-            return
-
-        if self.user and self.verification_code:
-            logger.debug('Clearing verification_code for %s', self.pk)
-            self.verification_code = None                   # User exists, time to remove the verification code
-            self.save()
-            return
-
         #Force Kiddush Duty (it's a M2M, so has to be added after saving self)
-        if not self.duties.filter(pk=19).exists():
+        if self. head_of_household and not self.duties.filter(pk=19).exists():
             self.duties.add(19)
 
     # Send admmin notifications on changes to profile
