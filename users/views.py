@@ -86,7 +86,7 @@ def check_verification_code(request, verification_code):
     if profile.profile_role==Profile.PROFILE_ROLE_INDEPENDENT:  # Independent users should sign-up with their password
         return Response({'exists': True, 'verification_code': False})       # This should not happen, since the verification_code should have been  cleared
 
-    data = {'exists': True, 'first_name': profile.first_name, 'last_name': profile.last_name, 'verified': False, 'verification_code': True}
+    data = {'exists': True, 'first_name': profile.first_name, 'last_name': profile.last_name, 'full_name': profile.full_name, 'verified': False, 'verification_code': True}
 
 
     #if not user.default_family_to_add_children:
