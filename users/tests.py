@@ -17,6 +17,11 @@ class UserTestCase(TransactionTestCase):
         User.objects.create_superuser(username='abc', password='test', email='admin@mail.com', first_name='ad', last_name='min')
         Profile.objects.create(first_name='user', last_name='profile')        # this way the user-pk is different from the profile=pk
         self.user1 = User.objects.create_user(username='user_1', password='test', email='user1@mail.com', first_name='user', last_name='1')
+        #Set user1 as a male
+        profile1 = Profile.objects.get(user=self.user1.pk)
+        profile1.gender=Profile.PROFILE_GENDER_MALE
+        profile1.save()
+
         self.user2 = User.objects.create_user(username='user_2', password='test', email='user2@mail.com', first_name='user', last_name='2')
         self.user3 = User.objects.create_user(username='user_3', password='test', email='user3@mail.com', first_name='user', last_name='3')
         self.assertNotEqual(self.user1.pk,self.user1.profile.pk)
@@ -495,6 +500,11 @@ class UserTestCase(TransactionTestCase):
         login = user1.login(username='user_1', password='test')
         self.assertEqual(login, True)
 
+        # Before having a spouse, user is not head_of_household
+        response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertNotIn('head_of_household', response.data)
+
         # Cannot create spouse for other profile
         response = user1.post(reverse('profile-spouse-list', args=[1]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1'})
         self.assertHttpError(response)
@@ -517,6 +527,11 @@ class UserTestCase(TransactionTestCase):
         self.assertNotIn('full_name', response.data)
         self.assertEqual(response.data['title'], 'yisrael')
         spouse_pk = response.data['id']
+
+        # Is user now head_of_household?
+        response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data['head_of_household'], True)
 
         # Get spouse detail
         response = user1.get(reverse('profile-spouse-detail', args=[self.user1.profile.pk, spouse_pk]), format='json')
@@ -595,6 +610,11 @@ class UserTestCase(TransactionTestCase):
         login = user1.login(username='user_1', password='test')
         self.assertEqual(login, True)
 
+        # Before being a parent,  user is not head_of_household
+        response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertNotIn('head_of_household', response.data)
+
         # Cannot create child for other profile
         response = user1.post(reverse('profile-child-list', args=[1]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1'})
         self.assertHttpError(response)
@@ -619,6 +639,11 @@ class UserTestCase(TransactionTestCase):
         self.assertNotIn('read_only', response.data)
         child1_pk = response.data['id']
         child1_verification_code = response.data['verification_code']
+
+        # Is user now head_of_household?
+        response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data['head_of_household'], True)
 
         # Get child detail
         response = user1.get(reverse('profile-child-detail', args=[self.user1.profile.pk, child1_pk]), format='json')

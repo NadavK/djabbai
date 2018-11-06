@@ -154,8 +154,8 @@ class Profile(models.Model):
     bar_mitzvahed = models.BooleanField(default=True, verbose_name='בוגר', help_text='מעל גיל 13')
     bar_mitzvah_parasha = models.ForeignKey(Parasha, blank=True, null=True, related_name='people_with_this_barmitzvah_parasha', verbose_name='פרשת בר-מצווה')
 
-    user_notes = models.TextField(blank=True, verbose_name='הערות של המשתמש')
-    gabbai_notes = models.TextField(blank=True, verbose_name='הערות של הגבאי(לא מוצג למשתמש)')
+    user_notes = models.TextField(blank=True, verbose_name='הערות', help_text='הערות של המשתמש לגבאי')
+    gabbai_notes = models.TextField(blank=True, verbose_name='הערות של הגבאי', help_text='(לא מוצג למשתמש)')
     verification_code = models.IntegerField(blank=True, null=True, verbose_name='קוד אימות')     # Used to verify that a user can be created for an existing profile
 
     phone = models.CharField(blank=True, max_length=20, verbose_name='טלפון')
@@ -280,20 +280,28 @@ class Profile(models.Model):
 
         # kwargs_from_view is injected by the View during create to signify if self is a spouse or child
         if self.kwargs_from_view:
-            if 'child_of' in self.kwargs_from_view:
-                associated_parent = self.kwargs_from_view.pop('child_of')           # self is the child of parent
-                associated_parent.set_family(child=self)
-            elif 'spouse_of' in self.kwargs_from_view:
-                associated_spouse = self.kwargs_from_view.pop('spouse_of')          # self and spouse are, um, spice
-                associated_spouse.set_family(spouse=self)
-            elif 'child' in self.kwargs_from_view:
-                child = self.kwargs_from_view.pop('child')                          # self is parent of child
+            if 'child_of' in self.kwargs_from_view:                                 # self is the child of parent
+                parent = self.kwargs_from_view.pop('child_of')
+                # Check if parent should be head of family
+                if parent and not parent.head_of_household and parent.first_name and parent.last_name:  # profile with no first and last name is a non-member parent
+                    parent.head_of_household = True
+                    #parent.save()           # save is done by set_family()
+                parent.set_family(child=self)
+            elif 'spouse_of' in self.kwargs_from_view:                              # self and spouse are, um, spice
+                spouse = self.kwargs_from_view.pop('spouse_of')
+                # Check if spouse should be head of family
+                if not spouse.head_of_household and spouse.male and spouse.first_name and spouse.last_name:  # profile with no first and last name is a non-member parent
+                    spouse.head_of_household = True
+                    #spouse.save()           # save is done by set_family()
+                spouse.set_family(spouse=self)
+            elif 'child' in self.kwargs_from_view:                                  # self is parent of child
+                child = self.kwargs_from_view.pop('child')
                 if child.parents:                                                   # Check if child already has a parent with a family, and if so, add this parent to the same family
                     self.default_family_to_add_children = child.parents[0].default_family_to_add_children
                 self.set_family(child=child)
                 child.parents[0].set_family(spouse=self)
 
-        #Force Kiddush Duty (it's a M2M, so has to be added after saving self)
+        # Force Kiddush Duty (it's a M2M, so has to be added after saving self)
         if self. head_of_household and not self.duties.filter(pk=19).exists():
             self.duties.add(19)
 
@@ -377,7 +385,7 @@ class Profile(models.Model):
 
     @property
     def male(self):
-        return self.gender != self.PROFILE_GENDER_FEMALE
+        return self.gender == self.PROFILE_GENDER_MALE
 
     def set_family(self, spouse=None, child=None):
         if not self.default_family_to_add_children:
