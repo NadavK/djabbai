@@ -61,7 +61,7 @@ urlpatterns = [
     url(r'^api/v1/users/check_user/(?P<first_name>.+)/(?P<last_name>.+)/$', check_user, name='check_user'),
     url(r'^api/v1/users/check_verification_code/(?P<verification_code>.+)/$', check_verification_code, name='check_verification_code'),
     url(r'^nimda/', admin.site.urls),
-    url(r'^nimda/report_builder/', include('report_builder.urls')),
+    url(r'^report_builder/', include('report_builder.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', jwt_views.obtain_jwt_token, name='api-token-auth'),
