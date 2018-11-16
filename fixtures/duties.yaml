@@ -55,4 +55,7 @@
 - model: assignments.duty
   pk: 19
   fields: {order_id: 19, category: קידוש, name: תורן קידוש}
+- model: assignments.duty
+  pk: 20
+  fields: {order_id: 20, category: תפילה, name: פסוקי דזמרא}
 #IMPORTANT: 19 is added by default to new users, and implicitly added for edit
