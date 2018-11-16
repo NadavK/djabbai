@@ -93,10 +93,14 @@ class ParentProfileSerializer(ProfileSerializerBase):
         exclude = ProfileSerializerBase.Meta.exclude + ('first_name', 'last_name')
 
 
+class ChildProfileSerializer(ProfileSerializerBase):
+    father_full_name = None
+
+
 class ProfileSerializer(ProfileSerializerBase):
     parents = ProfileSerializerBase(many=True, allow_null=True, required=False, read_only=True)
     spouse = SpouseProfileSerializer(allow_null=True, required=False, read_only=True)
-    children = ProfileSerializerBase(many=True, required=False, read_only=True)
+    children = ChildProfileSerializer(many=True, required=False, read_only=True)
     father_full_name = None
 
 class FamilySerializer(serializers.ModelSerializer):
