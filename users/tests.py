@@ -610,7 +610,7 @@ class UserTestCase(TransactionTestCase):
         login = user1.login(username='user_1', password='test')
         self.assertEqual(login, True)
 
-        # Before being a parent,  user is not head_of_household
+        # Before being a parent, user is not head_of_household
         response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
         self.assertHttpCode(response, status.HTTP_200_OK)
         self.assertNotIn('head_of_household', response.data)
@@ -644,6 +644,7 @@ class UserTestCase(TransactionTestCase):
         response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
         self.assertHttpCode(response, status.HTTP_200_OK)
         self.assertEqual(response.data['head_of_household'], True)
+        self.assertIn('verification_code', response.data)        #verification code is now exposed
 
         # Get child detail
         response = user1.get(reverse('profile-child-detail', args=[self.user1.profile.pk, child1_pk]), format='json')
@@ -694,6 +695,7 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.data['title'], 'yisrael')
         self.assertNotIn('read_only', response.data)
         child2_pk = response.data['id']
+        child2_verification_code = response.data['verification_code']
 
         # Get child detail from deep profile
         response = user1.get(reverse('profile-list'), format='json')
@@ -740,10 +742,10 @@ class UserTestCase(TransactionTestCase):
         self.assertHttpError(response)
 
         # Create user for existing child profile - with wrong verification
-        response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1', 'full_name': 'full name', 'verification_code': 123})
+        response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1', 'full_name': 'full name', 'verification_code': child1_verification_code+1})
         self.assertHttpError(response)
 
-        # Create user for existing child profile - with correct verification
+        # Create user for existing child profile - with profile's verification and new names
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1New', 'last_name': '1New', 'full_name': 'full name', 'verification_code': child1_verification_code})
         self.assertHttpCode(response, status.HTTP_201_CREATED)
         self.assertEqual(response.data['first_name'], 'child1New')
@@ -757,7 +759,7 @@ class UserTestCase(TransactionTestCase):
         self.assertHttpCode(response, status.HTTP_200_OK)
         self.assertEqual(response.data['user'], child1_user_pk)
         self.assertEqual(response.data['read_only'], True)
-        self.assertNotIn('verification_code', response.data)       # User is verified, so verification-code no longer exists
+        self.assertNotIn('verification_code', response.data)        #verification code is only exposed if it can be used on spouse or children
 
         # Verified (registered) child cannot be edited by parent
         response = user1.patch(reverse('profile-child-detail', args=[self.user1.profile.pk, child1_pk]), format='json', data={'full_name': 'full child1 edit'})
@@ -807,7 +809,6 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.data['title'], 'yisrael')
 
 
-
         # Get child detail from deep profile
         response = user1.get(reverse('profile-list'), format='json')
         self.assertHttpCode(response, status.HTTP_200_OK)
@@ -833,8 +834,8 @@ class UserTestCase(TransactionTestCase):
         # Create user for existing spouse profile - with correct verification
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1', 'full_name': 'full name', 'verification_code': spouse_verification_code})
         self.assertHttpCode(response, status.HTTP_201_CREATED)
-        self.assertIn('token', response.data)                   #did we get a token?
-        self.assertTrue(response.data['token'])                 #is it empty?
+        self.assertIn('token', response.data)                   # did we get a token?
+        self.assertTrue(response.data['token'])                 # is it empty?
         self.assertEqual(response.data['id'], spouse_pk)
 
         spouse1 = APIClient()
@@ -864,12 +865,180 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.data['children'][1]['id'], child2_pk)
 
 
+        # Create second child
+        response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child2New', 'last_name': '2New', 'full_name': 'full name', 'verification_code': child2_verification_code})
+        self.assertHttpCode(response, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['first_name'], 'child2New')
+        self.assertEqual(response.data['last_name'], '2New')
+        self.assertIn('token', response.data)                   # did we get a token?
+        self.assertTrue(response.data['token'])                 # is it empty?
+        self.assertEquals(response.data['id'], child2_pk)       # is is the profile-id
+
+        response = spouse1.get(reverse('profile-detail', args=[spouse_pk]), format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertNotIn('verification_code', response.data)        #verification code is no longer exposed
+
+        response = user1.get(reverse('profile-detail', args=[self.user1.profile.pk]), format='json')
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertNotIn('verification_code', response.data)        # verification code is no loner exposed
+
 
 
     # TODO: test editing on the profile API
 
 
-    def DISABLED_test_throttle_check_user(self):       #Disabled because it affected other tests
+    # Verification test use-cases:
+    #   child:
+    #       same name, no code/bad code
+    #       same name, profile code
+    #       same name, parent1 code
+    #       same name, parent2 code
+    #       new name, no code/bad code
+    #       new name, profile code
+    #       new name, parent1 code
+    #       new name, parent2 code
+    #   spouse:
+    #       same name, no code/bad code
+    #       same name, profile code
+    #       same name, spouse code
+    #       new name, no code/bad code
+    #       new name, profile code
+    #       new name, spouse code
+
+
+    def prepare_verification_code_tests_child(self):
+        # return parent verification_code, and child profile
+        user1 = APIClient()
+        login = user1.login(username=self.user1.username, password='test')
+        self.assertEqual(login, True)
+
+        # Create child
+        response = user1.post(reverse('profile-child-list', args=[self.user1.profile.pk]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1'})
+        self.assertHttpCode(response, status.HTTP_201_CREATED)
+        child1_pk = response.data['id']
+
+        return user1, Profile.objects.get(pk=child1_pk)
+
+    def confirm_verification_code_tests_child(self, child, first_name, pk, verification_code):
+        anon = APIClient()
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': first_name, 'last_name': child.last_name, 'full_name': child.full_name,
+                                   'profile_id': pk, 'verification_code': verification_code})
+        self.assertHttpCode(response, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['first_name'], first_name)
+        self.assertEqual(response.data['last_name'], child.last_name)
+        self.assertEquals(response.data['id'], child.pk)  # is it the right profile-id
+
+    def test_verification_code_child_same_name_child_verification_code(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        # Create user for existing child profile - with profile's verification
+        self.confirm_verification_code_tests_child(child, child.first_name, None, child.verification_code)
+
+    def test_verification_code_child_new_name_child_verification_code(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        # Create user for existing child profile - with profile's verification and new names
+        self.confirm_verification_code_tests_child(child, child.first_name + 'a', None, child.verification_code)
+
+    def test_verification_code_child_same_name_parent1_verification_code(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        # Create user for existing child profile - with profile's verification and new names
+        self.confirm_verification_code_tests_child(child, child.first_name, None, self.user1.profile.verification_code)
+
+    def test_verification_code_child_new_name_parent1_verification_code(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        # Create user for existing child profile - with profile's verification and new names
+        self.confirm_verification_code_tests_child(child, child.first_name + 'a', child.pk, self.user1.profile.verification_code)
+
+    def test_verification_code_child_same_name_parent2_verification_code(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        # Create spouse
+        response = user1.post(reverse('profile-spouse-list', args=[self.user1.profile.pk]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1'})
+        self.assertHttpCode(response, status.HTTP_201_CREATED)
+        spouse_verification_code = response.data['verification_code']
+
+        # Create user for existing child profile - with profile's verification and new names
+        self.confirm_verification_code_tests_child(child, child.first_name, None, spouse_verification_code)
+
+    def test_verification_code_child_new_name_parent2_verification_code(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        # Create spouse
+        response = user1.post(reverse('profile-spouse-list', args=[self.user1.profile.pk]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1'})
+        self.assertHttpCode(response, status.HTTP_201_CREATED)
+        spouse_verification_code = response.data['verification_code']
+
+        # Create user for existing child profile - with profile's verification and new names
+        self.confirm_verification_code_tests_child(child, child.first_name + 'a', child.pk, spouse_verification_code)
+
+
+    def test_verification_code_child_errors(self):
+        user1, child = self.prepare_verification_code_tests_child()
+
+        anon = APIClient()
+
+        # Create user for existing child profile - with wrong verification
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name, 'full_name': child.full_name,
+                                   'verification_code':  child.verification_code + 1, })
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['Profile already exits for that name, but Verification Code is incorrect'])
+
+        # Create user for existing child profile - with empty verification
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name, 'full_name': child.full_name,
+                                   'verification_code': None, })
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['Profile already exits for that name, but Verification Code is incorrect'])
+
+        # Create user for existing child profile - without verification
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name, 'full_name': child.full_name})
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['Profile already exits for that name, but Verification Code is incorrect'])
+
+        # Create user for existing child profile - with wrong profile_id
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name, 'full_name': child.full_name,
+                                   'verification_code':  child.verification_code, 'profile_id': 1})
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['That name is already in-use by a different profile'])
+
+        # set mismatched profile_id and Verification Code
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name+'a', 'full_name': child.full_name,
+                                   'verification_code': child.verification_code + 1, 'profile_id': self.user1.profile.pk})
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['Verification Code does not match Profile ID'])
+
+        # Non existing Profile ID
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name+'a', 'full_name': child.full_name,
+                                   'verification_code': child.verification_code + 1, 'profile_id': 123})
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['Profile ID not found'])
+
+        # Using parent's verification_code without a profile_id
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name+'a', 'full_name': child.full_name,
+                                   'verification_code': self.user1.profile.verification_code})
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['The profile associated with the Verification Code is already signed-up (did you meant to sign-up a specific Profile ID?'])
+
+        # Using parent's verification_code without a profile_id
+        response = anon.post(reverse('user-create'), format='json',
+                             data={'username': 'abx', 'password': "abcdef1", 'first_name': child.first_name, 'last_name': child.last_name+'a', 'full_name': child.full_name,
+                                   'verification_code': self.user1.profile.verification_code+1})
+        self.assertHttpError(response)
+        self.assertEquals(response.data, ['Verification Code not matched'])
+
+
+
+    def DISABLED_test_throttle_check_user_free(self):       #Disabled because it affected other tests
         anon = self.client
 
         for x in range(15):
@@ -904,28 +1073,27 @@ class UserTestCase(TransactionTestCase):
         self.assertHttpCode(response, status.HTTP_429_TOO_MANY_REQUESTS)
 
 
-    def test_check_user(self):
-        # test the check_user API
+    def test_check_user_free(self):
+        # test the check_user_free API
         anon = self.client
         response = anon.get(reverse('check_user', args=['user', '1']))      # Newly created user
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'verified': True})
+        self.assertHttpCode(response, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.data, 'Profile already exists')
 
         response = anon.get(reverse('check_user', args=['User', '1']))      # Newly created user - case-insensitive
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'verified': True})
+        self.assertHttpCode(response, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.data, 'Profile already exists')
 
         response = anon.get(reverse('check_user', args=['spouse', '1']))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': False})
-
-        response = anon.get(reverse('check_user', args=['Spouse', '1']))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': False})
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
 
         response = anon.get(reverse('check_user', args=['child1', '1']))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': False})
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=[None, None, self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+        response = anon.get(reverse('get_profiles', args=[self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_422_UNPROCESSABLE_ENTITY)          # no profiles can be activated with this verification_code
 
         user1 = APIClient()
         login = user1.login(username='user_1', password='test')
@@ -933,32 +1101,76 @@ class UserTestCase(TransactionTestCase):
 
         # Create spouse
         response = user1.post(reverse('profile-spouse-list', args=[self.user1.profile.pk]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'spouse', 'last_name': '1'})
-        user1_verification_code = response.data['verification_code']
+        spouse1_verification_code = response.data['verification_code']
+        spouse1_pk = response.data['id']
         self.assertHttpCode(response, status.HTTP_201_CREATED)
 
         response = anon.get(reverse('check_user', args=['spouse', '1']))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'spouse', 'verified': False, 'verification_code': False})
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1']))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
 
         response = anon.get(reverse('check_user', args=['spouse', '1', None]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'spouse', 'verified': False, 'verification_code': False})
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
 
         response = anon.get(reverse('check_user', args=['spouse', '1', '']))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'spouse', 'verified': False, 'verification_code': False})
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
 
-        response = anon.get(reverse('check_user', args=['spouse', '1', 1234567]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'spouse', 'verified': False, 'verification_code': False})
+        response = anon.get(reverse('check_user', args=['spouse', '1', spouse1_verification_code+1]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
 
         response = anon.get(reverse('check_user', args=['spouse', '1', 'x']))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'spouse', 'verified': False, 'verification_code': False})
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
 
-        response = anon.get(reverse('check_user', args=['spouse', '1', user1_verification_code]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'spouse', 'verified': False, 'verification_code': True})
+        response = anon.get(reverse('check_user', args=['spouse', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['spouse', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        #response = anon.get(reverse('get_profiles', args=[None]))
+        #self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        #response = anon.get(reverse('get_profiles', args=['']))
+        #self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        #response = anon.get(reverse('get_profiles', args=['x']))
+        #self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('get_profiles', args=[spouse1_verification_code+1]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('get_profiles', args=[spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}})
+
 
         # Create child
         response = user1.post(reverse('profile-child-list', args=[self.user1.profile.pk]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1'})
@@ -967,22 +1179,209 @@ class UserTestCase(TransactionTestCase):
         child1_verification_code = response.data['verification_code']
 
         response = anon.get(reverse('check_user', args=['child1', '1']))      # Newly created user
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #self.assertEqual(response.data, {'exists': True})
-        self.assertEqual(response.data, {'exists': True, 'family': 'user & spouse 1', 'relation': 'child', 'verified': False, 'verification_code': False})
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
 
-        #Create user for existing child profile - with correct verification
+        response = anon.get(reverse('check_user', args=['Child1', '1']))      # Newly created user
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child1', '1', child1_verification_code+1]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child1', '1', child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['child1', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['child1', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+
+        response = anon.get(reverse('get_profiles', args=[child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {child1_pk: {'first_name': 'child1', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}, child1_pk: {'first_name': 'child1', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}, child1_pk: {'first_name': 'child1', 'last_name': '1', 'full_name': ''}})
+
+        # Create second child
+        response = user1.post(reverse('profile-child-list', args=[self.user1.profile.pk]), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child2', 'last_name': '1'})
+        self.assertHttpCode(response, status.HTTP_201_CREATED)
+        child2_pk = response.data['id']
+        child2_verification_code = response.data['verification_code']
+
+        # User 1
+        response = anon.get(reverse('check_user', args=['child1', '1']))      # Newly created user
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['Child1', '1']))      # Newly created user
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child1', '1', child1_verification_code+1]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child1', '1', child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['child1', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['child1', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        # User 2
+        response = anon.get(reverse('check_user', args=['child2', '1']))      # Newly created user
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child2', '1']))      # Newly created user
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child2', '1', child2_verification_code+1]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['child2', '1', child2_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, child2_verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['child2', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['child2', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'child', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', child2_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': False})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+
+        response = anon.get(reverse('get_profiles', args=[child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {child1_pk: {'first_name': 'child1', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[child2_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {child2_pk: {'first_name': 'child2', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}, child1_pk: {'first_name': 'child1', 'last_name': '1', 'full_name': ''}, child2_pk: {'first_name': 'child2', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}, child1_pk: {'first_name': 'child1', 'last_name': '1', 'full_name': ''}, child2_pk: {'first_name': 'child2', 'last_name': '1', 'full_name': ''}})
+
+
+        # Create user for existing child profile - with correct verification
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx', 'password': "abcdef1", 'first_name': 'child1', 'last_name': '1', 'full_name': 'full name', 'verification_code': child1_verification_code})
         self.assertHttpCode(response, status.HTTP_201_CREATED)
+        self.assertEquals(response.data['id'], child1_pk)
 
-        response = anon.get(reverse('check_user', args=['child1', '1']))      # Newly created user
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #self.assertEqual(response.data, {'exists': True})
-        self.assertEqual(response.data, {'exists': True, 'verified': True})
+        response = anon.get(reverse('check_user', args=['child1', '1']))
+        self.assertHttpCode(response, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.data, 'Profile already exists')
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=['Spouse', '1', self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'family': 'user & spouse 1', 'relation': 'spouse', 'valid_verification_code': True})
+
+        response = anon.get(reverse('check_user', args=[None, None, self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
 
 
-    def test_spouse_parents(self):          # Specificaly tests if spouse parents can be edited
-        # test the check_user API
+        response = anon.get(reverse('get_profiles', args=[child1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {})
+
+        response = anon.get(reverse('get_profiles', args=[child2_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {child2_pk: {'first_name': 'child2', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[spouse1_verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}, child2_pk: {'first_name': 'child2', 'last_name': '1', 'full_name': ''}})
+
+        response = anon.get(reverse('get_profiles', args=[self.user1.profile.verification_code]))
+        self.assertHttpCode(response, status.HTTP_200_OK)
+        self.assertEqual(response.data, {spouse1_pk: {'first_name': 'spouse', 'last_name': '1', 'full_name': ''}, child2_pk: {'first_name': 'child2', 'last_name': '1', 'full_name': ''}})
+
+    # Specifically test if spouse parents can be edited
+    def test_spouse_parents(self):
         user1 = APIClient()
         login = user1.login(username='user_1', password='test')
         self.assertEqual(login, True)
@@ -1032,7 +1431,7 @@ class UserTestCase(TransactionTestCase):
         # Create with bad code
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_parent', 'password': "abcdef1", 'first_name': 'parent1', 'last_name': '1', 'full_name': 'full name', 'verification_code': parent_verification_code+1})
         self.assertHttpError(response)
-        self.assertEqual(response.data, ['Profile not found for Verification Code'])
+        self.assertEqual(response.data, ['Verification Code not matched'])
 
         # Create with good code
         response = anon.post(reverse('user-create'), format='json', data={'username': 'abx_parent', 'password': "abcdef1", 'first_name': 'parent1', 'last_name': '1', 'full_name': 'full name', 'verification_code': parent_verification_code})
@@ -1105,11 +1504,11 @@ class UserTestCase(TransactionTestCase):
         response = user1.get(reverse('user-spouse-detail', args=[self.user1.pk, 99]), format='json')                # Bad spouse
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        # check_user
+        # check_user_free
         anon = self.client
         response = anon.get(reverse('check_user', args=['spouse1_last1']))      # Newly created user
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'family': 'spouse1 last1 + user 1', 'verified': False})
+        self.assertEqual(response.data, {'family': 'spouse1 last1 + user 1'})
 
         # Anon can set password for existing non-verified user
         response = anon.post(reverse('register'), format='json', data={"first_name": "spouse1", "last_name": "last1", 'password': "123456", "email": "new1@gmail.com", 'username': 'duh'})
@@ -1125,7 +1524,7 @@ class UserTestCase(TransactionTestCase):
         login = spouse1.login(username='spouse1_last1', password='123456')
         self.assertEqual(login, True)
 
-        # check_user
+        # check_user_free
         response = anon.get(reverse('check_user', args=['spouse1_last1']))      # Newly created user
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'verified': True})
@@ -1134,7 +1533,7 @@ class UserTestCase(TransactionTestCase):
 
 
 
-    # Also checks check_user
+    # Also checks check_user_free
     def XXtest_create_user(self):
         # Anon - via user-list
         anon = self.client
@@ -1158,7 +1557,7 @@ class UserTestCase(TransactionTestCase):
         newuser1_id = response.data['id']
         #self.assertEqual(response.data['display_name'], '')        for some reason we don't get display_name here. is checked further on
 
-        # check_user
+        # check_user_free
         response = anon.get(reverse('check_user', args=['new_user1']))      # Newly created user
         self.assertHttpCode(response, status.HTTP_200_OK)
         self.assertEqual(response.data, {'verified': True})
@@ -1214,10 +1613,10 @@ class UserTestCase(TransactionTestCase):
         #self.assertEqual(response.data['display_name'], 'first1admin_last2admin')
         response = admin.get(reverse('check_user', args=['first1admin_last2admin']))      # child user
         self.assertHttpCode(response, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'family': 'new user1', 'verified': False})
+        self.assertEqual(response.data, {'family': 'new user1'})
         response = anon.get(reverse('check_user', args=['first1admin_last2admin']))      # child user
         self.assertHttpCode(response, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'family': 'new user1', 'verified': False})
+        self.assertEqual(response.data, {'family': 'new user1'})
 
         # User can create child
         response = new_user1.post(reverse('user-child-list', args=[newuser1_id]), format='json', data={"first_name": "first1", "last_name": "last2", 'username': "new_child13a", 'display_name': 'dudud'})
@@ -1245,12 +1644,12 @@ class UserTestCase(TransactionTestCase):
 
         response = anon.get(reverse('check_user', args=['first1_last2']))      # child user
         self.assertHttpCode(response, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'family': 'new user1', 'verified': False})
+        self.assertEqual(response.data, {'family': 'new user1'})
         response = anon.get(reverse('check_user', args=['new_child14']))      # child user
         self.assertHttpCode(response, status.HTTP_404_NOT_FOUND)
         response = anon.get(reverse('check_user', args=['first2_last2']))      # child user
         self.assertHttpCode(response, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'family': 'new user1', 'verified': False})
+        self.assertEqual(response.data, {'family': 'new user1'})
 
         # Obtain token for new user
         new_user1_login = APIClient()
@@ -1333,11 +1732,11 @@ class UserTestCase(TransactionTestCase):
         response = user1.get(reverse('user-child-detail', args=[self.user1.pk, 99]), format='json')                # Bad child
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        # check_user
+        # check_user_free
         anon = self.client
         response = anon.get(reverse('check_user', args=['child1_last1']))      # Newly created user
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'family': 'user 1', 'verified': False})
+        self.assertEqual(response.data, {'family': 'user 1'})
 
         # Anon can set password for existing non-verified user
         response = anon.post(reverse('register'), format='json', data={"first_name": "child1", "last_name": "last1", 'password': "123456", "email": "new1@gmail.com", 'username': 'duh'})
@@ -1353,7 +1752,7 @@ class UserTestCase(TransactionTestCase):
         login = child1.login(username='child1_last1', password='123456')
         self.assertEqual(login, True)
 
-        # check_user
+        # check_user_free
         response = anon.get(reverse('check_user', args=['child1_last1']))      # Newly created user
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'verified': True})
@@ -1425,8 +1824,6 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.data['mother']['full_name'], "פלוניתב בת פלוניתג")
         self.assertEqual(response.data['full_name'], "פלוניא")
         self.assertEqual(response.data['full_aliya_name'], "פלוניא בן פלוניב הכהן")
-
-
 
     def XXtest_parent_name_user(self):
         user1 = APIClient()

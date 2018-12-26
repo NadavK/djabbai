@@ -23,3 +23,14 @@ def create_notice_types(sender, **kwargs):
     # Only head-of-households require the Kiddush duty
     from users.models import Profile
     qs = Profile.duties.through.objects.filter(profile__head_of_household=False, duty__pk=19).delete()
+
+    #Generate verification codes
+    print('************************** Generating verification codes ************************************')
+    from users.models import Profile
+    #qs = Profile.objects.filter(verification_code__isnull=True)
+    qs = Profile.objects.all()
+    print('Generating verification code for profiles: ', qs.count())
+    for p in qs:
+        p.generate_verification_code()
+        p.save()
+    print('************************** Finished Generating verification codes ************************************')

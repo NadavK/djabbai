@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from djoser.views import UserCreateView
+from itertools import chain
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import detail_route, api_view, throttle_classes, permission_classes
-from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import BasePermission, AllowAny, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
@@ -27,76 +28,49 @@ def check_user(request, first_name, last_name, verification_code=None):
     """
     Returns details needed for sign-up: does user exist? are they verified? who are the parents/spouse?
     """
-    logger.error('CHECK %s %s %s', first_name, last_name, verification_code)
+    logger.info('CHECK %s %s %s', first_name, last_name, verification_code)
     try:
-        profile = Profile.objects.get(first_name__iexact=first_name, last_name__iexact=last_name)    # Does a profile exist without a user?
+        profile = Profile.objects.get(first_name__iexact=first_name, last_name__iexact=last_name)    # Does a profile exist for this name?
+        if profile.profile_role == Profile.PROFILE_ROLE_INDEPENDENT:
+            return Response('Profile already exists', status.HTTP_409_CONFLICT)
     except Profile.DoesNotExist:
-        logger.debug('No profile')
-        return Response({'exists': False})
+        raise Http404
 
-    if profile.profile_role==Profile.PROFILE_ROLE_INDEPENDENT:
-        return Response({'exists': True, 'verified': True})
+    verification_code_bool, family, family_relation, verification_code_relation = profile.verify_verification_code_with_metadata(verification_code)
 
-    # if not user.default_family_to_add_children:
-    #     raise ViewDoesNotExist({"message": "This user is not verified, and does not have a default_family"})
+    if not family:
+        return Response('Family not found', status.HTTP_400_BAD_REQUEST)
 
-    try:
-        family = Family.objects.get(parents__pk=profile.pk)             # First check if user is a parent
-        relation = 'spouse'
-    except Family.DoesNotExist:
-        try:
-            family = Family.objects.get(children__pk=profile.pk)        # If not a parent, maybe a child?
-            relation = 'child'
-        except Family.DoesNotExist:
-            # print('No family 1', Family.objects.all().count())
-            # for family in Family.objects.all():
-            #     print("'" + family.display_name() + "'")
-            #     for parent in family.parents:
-            #         print("'\t" + parent + "'")
-
-            raise Http404
-
-    verification_code_bool = (str(profile.verification_code) == str(verification_code))
-
-    data = {'exists': True, 'family': family.display_name(), 'verified': False, 'relation': relation, 'verification_code': verification_code_bool}
-
-
-    #if not user.default_family_to_add_children:
-    #    raise ViewDoesNotExist({"message": "This user is not verified, and does not have a default_family"})
-    #
-    #data = {'family': user.default_family_to_add_children.display_name(), 'verified': False}
-
-
+    data = {'family': family.display_name(), 'relation': family_relation, 'valid_verification_code': verification_code_bool}
     return Response(data)
 
 @api_view(['GET'])
 @throttle_classes([CheckUserThrottle])
 @permission_classes([AllowAny])
-def check_verification_code(request, verification_code):
+def get_profiles(request, verification_code):
     """
-    Returns details needed for sign-up: does user exist? are they verified? who are the parents/spouse?
+    Returns the list of profiles that can sign up with the verification_code
     """
-    logger.error('CHECK VERIFICATION CODE: %s', verification_code)
+    logger.info('get_profiles %s', verification_code)
     try:
-        profile = Profile.objects.get(verification_code__iexact=verification_code)
+        profile = Profile.objects.get(verification_code=verification_code)  # Does a profile exist with this verification_code?
     except Profile.DoesNotExist:
-        logger.debug('No profile for this verification_code')
-        return Response({'exists': False, 'verification_code': False})
+        raise Http404
 
-    if profile.profile_role==Profile.PROFILE_ROLE_INDEPENDENT:  # Independent users should sign-up with their password
-        return Response({'exists': True, 'verification_code': False})       # This should not happen, since the verification_code should have been  cleared
+    verification_code_bool, family, family_relation, verification_code_relation = profile.verify_verification_code_with_metadata(verification_code)
+    if not verification_code_bool:
+        #how can this be... picked the profile based on the verification_code
+        return Response('Bad Verification Code', status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    data = {'exists': True, 'first_name': profile.first_name, 'last_name': profile.last_name, 'full_name': profile.full_name, 'verified': False, 'verification_code': True}
+    if not family:
+        return Response('Family not found', status.HTTP_400_BAD_REQUEST)
 
+    # return non-independent profiles from: self, children, spouse
+    profiles = {}
+    for profile in profile.related_non_independent_profiles():
+        profiles[profile.pk] = {'first_name': profile.first_name, 'last_name': profile.last_name, 'full_name': profile.full_name}
 
-    #if not user.default_family_to_add_children:
-    #    raise ViewDoesNotExist({"message": "This user is not verified, and does not have a default_family"})
-    #
-    #data = {'family': user.default_family_to_add_children.display_name(), 'verified': False}
-
-
-    return Response(data)
-
+    return Response(profiles)
 
 
 @api_view(['GET'])

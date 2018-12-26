@@ -21,13 +21,11 @@ from rest_framework_jwt import views as jwt_views
 
 from parashot.views import ParashaViewSet, SegmentViewSet
 from assignments.views import DutyViewSet, ShabbatViewSet, AssignmentViewSet, RosterViewSet
-from users.views import ProfileViewSet, FamilyViewSet, SpouseProfileViewSet, check_user, check_verification_code, ChildProfileViewSet, MyUserCreateView, get_current_profile, ParentProfileViewSet
+from users.views import ProfileViewSet, SpouseProfileViewSet, get_profiles, check_user, ChildProfileViewSet, MyUserCreateView, get_current_profile, ParentProfileViewSet
 
 router = routers.DefaultRouter()
 router.register(r'profiles', ProfileViewSet)
-#router.register(r'families', FamilyViewSet)
 router.register(r'parashas', ParashaViewSet)
-#router.register(r'segments', SegmentViewSet)
 router.register(r'duties', DutyViewSet)
 #router.register(r'shabbats', ShabbatViewSet)
 #router.register(r'roster', RosterViewSet)
@@ -57,9 +55,9 @@ urlpatterns = [
     url(r'^api/v1/auth/users/create/', MyUserCreateView.as_view(), name='user-create'),    # Override djoser registration. Make sure it comes *before* djoser
     url(r'^api/v1/auth/', include('djoser.urls')),
     url(r'^api/v1/profile/', get_current_profile, name='get_current_profile'),
-    url(r'^api/v1/users/check_user/(?P<first_name>.+)/(?P<last_name>.+)/(?P<verification_code>.*)/$', check_user, name='check_user'),
-    url(r'^api/v1/users/check_user/(?P<first_name>.+)/(?P<last_name>.+)/$', check_user, name='check_user'),
-    url(r'^api/v1/users/check_verification_code/(?P<verification_code>.+)/$', check_verification_code, name='check_verification_code'),
+    url(r'^api/v1/users/check_user_free/(?P<first_name>.+)/(?P<last_name>.+)/(?P<verification_code>.*)/$', check_user, name='check_user'),
+    url(r'^api/v1/users/check_user_free/(?P<first_name>.+)/(?P<last_name>.+)/$', check_user, name='check_user'),
+    url(r'^api/v1/users/get_profiles/(?P<verification_code>.+)/$', get_profiles, name='get_profiles'),
     url(r'^nimda/', admin.site.urls),
     url(r'^report_builder/', include('report_builder.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),

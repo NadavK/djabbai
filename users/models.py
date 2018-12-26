@@ -1,4 +1,5 @@
 import logging
+from itertools import chain
 from random import randint
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -52,6 +53,7 @@ class User(AbstractUser):
     class Meta:
         ordering = ('username',)
 
+    #username is set in ui to first_name + '_' + last_name
     username = models.CharField(
         _('username'),
         max_length=150,
@@ -66,7 +68,8 @@ class User(AbstractUser):
 
     first_name = models.CharField(_('first name'), max_length=30)       # overwritten to remove the "blank=True"
     last_name = models.CharField(_('last name'), max_length=30)         # overwritten to remove the "blank=True"
-    verification_code = models.IntegerField(blank=True, null=True, verbose_name='קוד אימות')     # Used to verify that a user can be created for an existing profile
+    verification_code = models.IntegerField(blank=True, null=True, verbose_name='קוד אימות')     # Used to verify that a user can be created for an existing profile. Defined  in the User model to make it easier to pass the verification code as part of creating a new user (was not able to serialize a non-db field)
+    profile_id = models.IntegerField(blank=True, null=True, verbose_name='מספר פורפיל')          # Specifies the target profile for create. Defined in the User model to make it easier to pass the profile as part of creating a new user (was not able to serialize a non-db field)
 
     REQUIRED_FIELDS = ['first_name', 'last_name']           # used by Django just for creating a superuser
 
@@ -157,6 +160,7 @@ class Profile(models.Model):
     user_notes = models.TextField(blank=True, verbose_name='הערות', help_text='הערות של המשתמש לגבאי')
     gabbai_notes = models.TextField(blank=True, verbose_name='הערות של הגבאי', help_text='(לא מוצג למשתמש)')
     verification_code = models.IntegerField(blank=True, null=True, verbose_name='קוד אימות')     # Used to verify that a user can be created for an existing profile
+    #the verification_code must match either the spouse, one of the parents, or an existing profile
 
     phone = models.CharField(blank=True, max_length=20, verbose_name='טלפון')
     #email = models.CharField(blank=True, max_length=50, verbose_name='מייל')
@@ -222,15 +226,33 @@ class Profile(models.Model):
         # If a profile already exists for new user, then check that verification_code matches (for creating a user for a child or spouse)
         try:
             profile = Profile.objects.get(first_name=instance.first_name, last_name=instance.last_name)
-            if instance.verification_code != profile.verification_code:
-                raise ValidationError('Profile already exits. Set correct Verification Code')
+            if not profile.verify_verification_code(instance.verification_code):
+                raise ValidationError('Profile already exits for that name, but Verification Code is incorrect')
+            if instance.profile_id and instance.profile_id != profile.pk:
+                raise ValidationError('That name is already in-use by a different profile')
+            instance.profile_id = profile.pk
             return
         except Profile.DoesNotExist:
+            print('Profile.DoesNotExist')
             pass
 
         # If instance.verification_code was set, then check that a matching profile exists (objects will be updated in post_save)
-        if instance.verification_code and not Profile.objects.filter(verification_code=instance.verification_code).exists():
-            raise ValidationError('Profile not found for Verification Code')
+        if instance.profile_id:
+            try:
+                profile = Profile.objects.get(pk=instance.profile_id)
+                if not profile.verify_verification_code(instance.verification_code):
+                    raise ValidationError('Verification Code does not match Profile ID')
+            except Profile.DoesNotExist:
+                raise ValidationError('Profile ID not found')
+        elif instance.verification_code:
+            try:
+                print('has verification_code without profile_id')
+                profile = Profile.objects.get(verification_code=instance.verification_code)
+                if profile.profile_role == Profile.PROFILE_ROLE_INDEPENDENT:                    # This profile already has a user
+                    raise ValidationError('The profile associated with the Verification Code is already signed-up (did you meant to sign-up a specific Profile ID?')
+                instance.profile_id = profile.pk
+            except Profile.DoesNotExist:
+                raise ValidationError('Verification Code not matched')
 
     @receiver(post_save, sender=User)
     def create_update_user_profile(sender, instance, created, **kwargs):
@@ -238,15 +260,15 @@ class Profile(models.Model):
         This function is called when a new user is created/edited, so we create/update the linked profile
         """
         need_to_save_profile = False
-        if created:     # Created means a new user  was created - Check if a profile needs to be created
-            if instance.verification_code:
+        if created:     # Created means a new user was created - Check if a profile needs to be created
+            if instance.profile_id:
                 try:
-                    instance.profile = Profile.objects.get(verification_code=instance.verification_code)
+                    instance.profile = Profile.objects.get(pk=instance.profile_id)
                     logger.debug('FOUND PROFILE verification_code %s on profile #%s', instance.verification_code, instance.profile.pk)
                     need_to_save_profile = True
                 except Profile.DoesNotExist:  # So create a profile for this user
-                    logger.debug('Verification Code %s not found ', instance.verification_code)
-                    raise ValidationError('Verification Code not found')
+                    logger.debug('Profile ID %s not found ', instance.profile_id)
+                    raise ValidationError('ProfileID not found')
             else:
                 logger.debug('Creating new profile for user #%s', instance.pk)
                 instance.profile = Profile.objects.create(user=instance, first_name=instance.first_name, last_name=instance.last_name)      # setting instance.profile for continuation of this function that compares betweeen user and profile names
@@ -262,19 +284,64 @@ class Profile(models.Model):
         if need_to_save_profile:
             instance.profile.save()
 
+    def generate_verification_code(self):
+        self.verification_code = randint(100000, 999999)
+        # Check that code is unique
+        while Profile.objects.filter(verification_code=self.verification_code).exists():
+            self.verification_code = randint(100000, 999999)
+
+    def verify_verification_code(self, verification_code):
+        return self.verify_verification_code_with_metadata(verification_code)[0]
+
+    # returns a tuple: verification_code_bool, family, family_relation, verification_code_relation
+    def verify_verification_code_with_metadata(self, verification_code):
+        try:
+            #family = Family.objects.get(parents__pk=self.pk)  # First check if user is a parent
+            family = Family.objects.get(parents=self)  # First check if user is a parent
+            family_relation = 'spouse'
+        except Family.DoesNotExist:
+            try:
+                family = Family.objects.get(children=self)  # If not a parent, maybe a child?
+                family_relation = 'child'
+            except Family.DoesNotExist:
+                return None, None, None, None
+
+        verification_code_bool = False
+        verification_code_relation = None
+        if verification_code:
+            # For a child, check if any of the parents' codes work
+            # For a spouse, check if the (any) spouse's code work
+            # And it can also match the current profile
+            if str(self.verification_code) == str(verification_code):
+                verification_code_bool = True
+                verification_code_relation = 'self'
+            if not verification_code_bool:
+                # both spouse and children are verified with the parent's verification_code (it's the family's parents, not the profile's parents)
+                verification_code_relation = 'parent'
+                for parent in family.parents.all():
+                    if verification_code and str(parent.verification_code) == str(verification_code):
+                        verification_code_bool = True
+
+        return verification_code_bool, family, family_relation, verification_code_relation
+
+    # Returns related non-independent profiles (profiles that can be activated with this profile's verification_code)
+    def related_non_independent_profiles(self):
+        profiles = []
+        verification_code_bool, family, family_relation, verification_code_relation = self.verify_verification_code_with_metadata(self.verification_code)
+        if family:
+            for profile in [self] if family_relation == 'child' else list(chain([self], family.children.all(), family.parents.all())):
+                if profile.profile_role != Profile.PROFILE_ROLE_INDEPENDENT:
+                    profiles.append(profile)
+
+        return profiles
+
     def save(self, *args, **kwargs):
         if not self.full_name and not (self.first_name and self.last_name):
             raise ValidationError('Either Full-Name, or First & Last names must be set')
 
         # Verification-code is used when creating a new user to associate with an existing child/parent/spouse profile
-        if not self.user and not self.verification_code:
-            self.verification_code = randint(10000, 99999)
-            # Check that code is unique
-            while Profile.objects.filter(verification_code=self.verification_code).exists():
-                self.verification_code = randint(10000, 99999)
-        elif self.user and self.verification_code:
-            logger.debug('Clearing verification_code for %s', self.pk)
-            self.verification_code = None                   # User exists, time to remove the verification code
+        if not self.verification_code:
+            self.generate_verification_code()
 
         super().save(*args, **kwargs)
 
@@ -355,7 +422,7 @@ class Profile(models.Model):
         """
         if self.user:
             return self.PROFILE_ROLE_INDEPENDENT                    # typically a parent, or a child that has their own account
-        elif self.parents.filter(user__isnull=False).exists():       # Is a parent controlling this profile?
+        elif self.parents.filter(user__isnull=False).exists():      # Is a parent controlling this profile?
             return self.PROFILE_ROLE_CONTROLLED                     # a parent is an INDEPENDENT, so this is a CONTROLLED (child)
         else:
             return self.PROFILE_ROLE_META                           # must be the father of an INDEPENDENT, but we don't actually check
