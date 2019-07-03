@@ -154,7 +154,7 @@ class Profile(models.Model):
     dod_month = models.PositiveSmallIntegerField(blank=True, null=True, choices=MONTHS, verbose_name='יארצייט - חודש')      # Yahrzeit Month
 
     gender = models.CharField(blank=True, max_length=1, choices=PROFILE_GENDERS, verbose_name='מין')
-    bar_mitzvahed = models.BooleanField(default=True, verbose_name='בוגר', help_text='מעל גיל 13')
+    bar_mitzvahed = models.BooleanField(default=False, verbose_name='בוגר', help_text='מעל גיל 13')
     bar_mitzvah_parasha = models.ForeignKey(Parasha, blank=True, null=True, related_name='people_with_this_barmitzvah_parasha', verbose_name='פרשת בר-מצווה')
 
     user_notes = models.TextField(blank=True, verbose_name='הערות', help_text='הערות של המשתמש לגבאי')
